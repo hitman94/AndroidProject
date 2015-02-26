@@ -14,7 +14,9 @@ public class AbstractObject {
 	
 	private Map<String, SpecialObject<Object>> specialObjects;
 	
-	
+	public AbstractObject() {
+		// TODO Auto-generated constructor stub
+	}
 	
 
 }
