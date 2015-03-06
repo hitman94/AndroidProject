@@ -1,4 +1,4 @@
-package com.example.projectandroid2015.util;
+package com.example.androidproject.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
-import com.example.projectandroid2015.database.AndodabContentProvider;
+import com.example.androidproject.database.AndodabContentProvider;
 import com.example.projetandroid2015.tables.DicObjectEntryTable;
 import com.example.projetandroid2015.tables.DicoObjectTable;
 import com.example.projetandroid2015.tables.EntryTable;

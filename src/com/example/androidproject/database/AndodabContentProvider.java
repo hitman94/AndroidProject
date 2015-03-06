@@ -1,4 +1,4 @@
-package com.example.projectandroid2015.database;
+package com.example.androidproject.database;
 
 import java.util.HashMap;
 
