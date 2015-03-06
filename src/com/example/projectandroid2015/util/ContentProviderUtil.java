@@ -1,5 +1,6 @@
 package com.example.projectandroid2015.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.ContentValues;
@@ -518,6 +519,28 @@ public class ContentProviderUtil  {
 					c.getString(c.getColumnIndex(DicoObjectTable.SEALED)));
 			return data;
 		}
+	}
+
+	// TODO méthode pour récupérer les enfants d'un dicoobject
+	public ArrayList<String> getChildren(String objectID) {
+		String URL = "content://com.example.andodab.provider.Andodab/dicoobject";
+		Uri roots = Uri.parse(URL);
+
+		ArrayList<String> children = new ArrayList<String>();
+
+		Cursor c = getContentResolver().query(roots, null,
+				"ancestor = '" + objectID + "'", null, "_id");
+
+		if (!c.moveToFirst()) {
+			return null;
+		} else {
+			do {
+				children.add(c.getString(c
+						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
+
+			} while (c.moveToNext());
+		}
+		return children;
 	}
 
 	// TODO Méthode avec hashmap pour les électriciens
