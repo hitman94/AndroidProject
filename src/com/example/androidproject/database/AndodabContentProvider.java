@@ -33,7 +33,7 @@ public class AndodabContentProvider extends ContentProvider {
 	public static int IDROOT_VALUE;
 
 	// fields for the content provider
-	static final String AUTHORITY = "com.example.projectandroid2015.provider.Andodab";
+	static final String AUTHORITY = "com.example.andodab.provider.Andodab";
 	static final String ROOT_PATH = "root";
 	static final String OBJECT_PATH = "object";
 	static final String OBJECTENTRY_PATH = "objectentry";

@@ -24,13 +24,14 @@ public class Galaxy extends Activity {
         super.onCreate(savedInstanceState);
         
         contentUtils= new ContentProviderUtil(this);
+        contentUtils.addElement(null);
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);
-        ObjectView root=new ObjectView(this,0,"1",null);
+        ObjectView root=new ObjectView(this,0,"Animal",null);
         rl.addView(root);
-        rl.addView(new ObjectView(this,1,"2",root));
-        rl.addView(new ObjectView(this,1,"3",root));
+//        rl.addView(new ObjectView(this,1,"1566666666666666666666654",root));
+//        rl.addView(new ObjectView(this,1,"3",root));
         setContentView(rl);
        
     }

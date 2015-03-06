@@ -31,6 +31,9 @@ public class CustomLayout extends RelativeLayout {
 	private int mActivePointerId = INVALID_POINTER_ID;
 	private Map<Integer, Integer> childByLevels;
 	private Map<Integer, Integer> maxHeightByLevels;
+	private Map<Integer, Integer> maxWidthByLevels;
+	private static final int WIDTH_MARGIN = 30;
+	private static final int HEIGHT_MARGIN = 30;
 	private Point screen = new Point();
 	private Paint paintLine = new Paint();
 	private View selectedObject = null;
@@ -43,6 +46,7 @@ public class CustomLayout extends RelativeLayout {
 		display.getSize(screen);
 		childByLevels = new HashMap<Integer, Integer>();
 		maxHeightByLevels = new HashMap<Integer, Integer>();
+		maxWidthByLevels = new HashMap<Integer, Integer>();
 		paintLine.setColor(Color.BLUE);
 	}
 
@@ -168,53 +172,51 @@ public class CustomLayout extends RelativeLayout {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int maxWidth = 0;
 		int maxHeight = 0;
-
-		int currentLongestWidth = 0;
-		int currentLongestHeight = 0;
-		int currentLevel = 0;
-		int childNumberLevel = 0;
+		childByLevels.clear();
+		maxWidthByLevels.clear();
+		maxHeightByLevels.clear();
 		for (int i = 0; i < getChildCount(); i++) {
 			final ObjectView v = (ObjectView) getChildAt(i);
 			if (v.getVisibility() != GONE) {
 				measureChild(v, widthMeasureSpec, heightMeasureSpec);
-
-				if (v.getLevel() == currentLevel) { // Si on est sur le meme
-					childNumberLevel++;
-					childByLevels.put(v.getLevel(), childNumberLevel);
-					currentLongestWidth += v.getMeasuredWidth() + 10;
-					if (v.getMeasuredHeight() > currentLongestHeight)
-						currentLongestHeight = v.getMeasuredHeight();
+				if(childByLevels.get(v.getLevel())!=null)
+					childByLevels.put(v.getLevel(), childByLevels.get(v.getLevel())+1);
+				else 
+					childByLevels.put(v.getLevel(), 1);
+				
+				if(maxWidthByLevels.get(v.getLevel())!=null) {
+					if(maxWidthByLevels.get(v.getLevel()) < v.getMeasuredWidth()) {
+						maxWidthByLevels.put(v.getLevel(), v.getMeasuredWidth());
+					}
 				}
-				if (v.getLevel() != currentLevel) {// on change de niveau dans
-													// l'arbre
-					maxHeightByLevels.put(currentLevel, currentLongestHeight);
-					childNumberLevel = 1;
-					childByLevels.put(v.getLevel(), childNumberLevel);
-					currentLevel = v.getLevel();
-					if (currentLongestWidth > maxWidth) // Si la largeur du
-														// niveau precedent est
-														// plus grande que les
-														// autres niveaux
-						maxWidth = currentLongestWidth;
-					currentLongestWidth += v.getMeasuredWidth() + 10;
-
-					maxHeight += currentLongestHeight + 20;
-					currentLongestHeight = v.getMeasuredHeight();
+				else 
+					maxWidthByLevels.put(v.getLevel(), v.getMeasuredWidth());
+				
+				if(maxHeightByLevels.get(v.getLevel())!=null) {
+					if(maxHeightByLevels.get(v.getLevel()) < v.getMeasuredHeight()) {
+						maxHeightByLevels.put(v.getLevel(), v.getMeasuredHeight());
+					}
 				}
+				else 
+					maxHeightByLevels.put(v.getLevel(), v.getMeasuredHeight());
+				
 			}
 		}
-
-		final ObjectView lastchild = (ObjectView) getChildAt(getChildCount() - 1);
-		if (lastchild.getLevel() == currentLevel) {
-
-			if (currentLongestWidth > maxWidth) // Si la largeur du dernier
-												// niveau est plus grande que
-												// les autres niveaux
-				maxWidth = currentLongestWidth;
-			maxHeightByLevels.put(currentLevel, currentLongestHeight);
-			maxHeight += currentLongestHeight + 20;
+		
+		for(int i : maxHeightByLevels.values())
+			maxHeight += i;
+		maxHeight = maxHeight +(HEIGHT_MARGIN*maxHeightByLevels.size());
+		
+		
+		for(int j=0;j<maxWidthByLevels.size();j++) {
+			System.err.println("widht : "+maxWidthByLevels.get(j)+" level :"+j+" nombre d'enfants du niveau:"+childByLevels.get(j));
+			if(maxWidth< (maxWidthByLevels.get(j)*childByLevels.get(j)) + childByLevels.get(j)*WIDTH_MARGIN ) {
+				maxWidth = (maxWidthByLevels.get(j)*childByLevels.get(j)) + childByLevels.get(j)*WIDTH_MARGIN;
+			}
 		}
-
+			
+		System.err.println("widdth"+maxWidth+" height:"+maxHeight);
+		
 		if (maxWidth > screen.x)
 			setMeasuredDimension(maxWidth, screen.y);
 
@@ -244,8 +246,9 @@ public class CustomLayout extends RelativeLayout {
 				renderedLevelChild = 0;
 			}
 
-			int leftMargin = getMeasuredWidth() / (numberOfChildInLevel + 1)
-					+ 150 * renderedLevelChild;
+			int leftMargin = getMeasuredWidth() / (numberOfChildInLevel + 1) - WIDTH_MARGIN
+					+ (maxWidthByLevels.get(child.getLevel())+ WIDTH_MARGIN) * renderedLevelChild ;
+			
 			int top = 40;
 			if (child.getLevel() != 0) {
 				int currentlevel = child.getLevel();
