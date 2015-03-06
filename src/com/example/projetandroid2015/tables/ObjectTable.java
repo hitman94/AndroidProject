@@ -9,16 +9,21 @@ public class ObjectTable {
 	public static final String COLUMN_ID = "_id";
 	public static final String OBJECT_TYPE = "objecttype";
 	public static final String ROOT = "root";
-	public static final String ANCESTRE = "ancestre";
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
 			+ "(" + COLUMN_ID + " VARCHAR(50) NOT NULL, " + OBJECT_TYPE
-			+ " ENUM('ObjetDic', 'OPPrimitif') NOT NULL, " + ROOT
-			+ " INTEGER NOT NULL, " + ANCESTRE + " VARCHAR(50), PRIMARY KEY ("
-			+ COLUMN_ID + "), FOREIGN KEY (" + ROOT
-			+ ") REFERENCES RootObject(" + COLUMN_ID + "), FOREIGN KEY ("
-			+ "ANCESTER" + ") REFERENCES Object(" + COLUMN_ID + "));";
+			+ " VARCHAR(50) NOT NULL, " + ROOT
+			+ " INTEGER NOT NULL, PRIMARY KEY (" + COLUMN_ID
+			+ "), FOREIGN KEY (" + ROOT + ") REFERENCES RootObject("
+			+ COLUMN_ID + "));";
+
+	private static final String DB_TRIGGER = "CREATE TRIGGER delete_allobj"
+			+ " BEFORE DELETE ON " + ObjectTable.TABLE_NAME
+			+ " FOR EACH ROW BEGIN" + " DELETE FROM "
+			+ DicoObjectTable.TABLE_NAME + " WHERE " + ObjectTable.TABLE_NAME
+			+ "." + ObjectTable.COLUMN_ID + " = " + DicoObjectTable.TABLE_NAME
+			+ "." + DicoObjectTable.COLUMN_ID + "; " + "END;";
 
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);

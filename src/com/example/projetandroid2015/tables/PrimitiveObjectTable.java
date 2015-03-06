@@ -7,13 +7,13 @@ public class PrimitiveObjectTable {
 	// Database Table
 	public static final String TABLE_NAME = "PrimitiveObject";
 	public static final String COLUMN_ID = "_id";
-	public static final String ANCESTRE = "ancestre";
+	public static final String ANCESTOR = "ancestor";
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
-			+ "(" + COLUMN_ID + " VARCHAR(50) NOT NULL, " + ANCESTRE
+			+ "(" + COLUMN_ID + " VARCHAR(50) NOT NULL, " + ANCESTOR
 			+ " VARCHAR(50) NOT NULL, PRIMARY KEY (" + COLUMN_ID
-			+ "), FOREIGN KEY (" + ANCESTRE + ") REFERENCES ObjectPPrimitive("
+			+ "), FOREIGN KEY (" + ANCESTOR + ") REFERENCES ObjectPPrimitive("
 			+ COLUMN_ID + "));";
 
 	public static void onCreate(SQLiteDatabase database) {

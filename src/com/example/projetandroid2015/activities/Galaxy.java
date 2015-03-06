@@ -1,9 +1,5 @@
 package com.example.projetandroid2015.activities;
 
-import com.example.projetandroid2015.R;
-import com.example.projetandroid2015.R.id;
-import com.example.projetandroid2015.R.menu;
-
 import views.CustomLayout;
 import views.ObjectView;
 import android.app.Activity;
@@ -13,6 +9,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.example.androidproject.R;
 
 public class Galaxy extends Activity {
 

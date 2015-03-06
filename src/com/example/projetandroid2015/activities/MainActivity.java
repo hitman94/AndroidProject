@@ -1,14 +1,11 @@
 package com.example.projetandroid2015.activities;
 
-import com.example.projetandroid2015.R;
-import com.example.projetandroid2015.R.id;
-import com.example.projetandroid2015.R.layout;
-import com.example.projetandroid2015.R.menu;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.androidproject.R;
 
 
 public class MainActivity extends Activity {

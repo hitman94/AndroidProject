@@ -3,6 +3,7 @@ package views;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.projetandroid2015.activities.Galaxy;
 import com.example.projetandroid2015.activities.MainActivity;
 
 import android.app.Activity;
@@ -28,49 +29,51 @@ public class CustomLayout extends RelativeLayout {
 	private float mLastTouchX;
 	private float mLastTouchY;
 	private int mActivePointerId = INVALID_POINTER_ID;
-	private Map<Integer,Integer> childByLevels;
-	private Map<Integer,Integer> maxHeightByLevels;
+	private Map<Integer, Integer> childByLevels;
+	private Map<Integer, Integer> maxHeightByLevels;
 	private Point screen = new Point();
 	private Paint paintLine = new Paint();
-	private View selectedObject=null;
+	private View selectedObject = null;
+
 	public CustomLayout(Context context) {
 		super(context);
-		WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) getContext().getSystemService(
+				Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		display.getSize(screen);
 		childByLevels = new HashMap<Integer, Integer>();
-		maxHeightByLevels= new HashMap<Integer, Integer>();
+		maxHeightByLevels = new HashMap<Integer, Integer>();
 		paintLine.setColor(Color.BLUE);
 	}
 
 	public void setSelectedObject(View selected) {
-		if(selectedObject!=null)
-			((ObjectView)selectedObject).unselect();
+		if (selectedObject != null)
+			((ObjectView) selectedObject).unselect();
 		this.selectedObject = selected;
-		MainActivity a = (MainActivity)getContext();
-		if(selectedObject != null) {
+		Galaxy a = (Galaxy) getContext();
+		if (selectedObject != null) {
 			a.objectUnselected();
 			a.objectSelected();
-		}else {
+		} else {
 			a.objectUnselected();
 		}
 	}
-	
+
 	public View getSelectedObject() {
 		return selectedObject;
 	}
-	
+
 	public void removeLevel(int level) {
-		int i=0;
-		for(i=0;i<getChildCount();i++) {
+		int i = 0;
+		for (i = 0; i < getChildCount(); i++) {
 			ObjectView v = (ObjectView) getChildAt(i);
-			if(v.getLevel()==level) 
+			if (v.getLevel() == level)
 				break;
 		}
-		removeViews(i, getChildCount()-i);
+		removeViews(i, getChildCount() - i);
 		requestLayout();
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		// Let the ScaleGestureDetector inspect all events.
@@ -91,18 +94,18 @@ public class CustomLayout extends RelativeLayout {
 			final float x = ev.getX(pointerIndex);
 			final float y = ev.getY(pointerIndex);
 
-			if(Math.abs(mPosX)>getMeasuredWidth()/2) {
-				if(mPosX>0)
-					mPosX-=20;
+			if (Math.abs(mPosX) > getMeasuredWidth() / 2) {
+				if (mPosX > 0)
+					mPosX -= 20;
 				else
-					mPosX+=20;
+					mPosX += 20;
 				return true;
 			}
-			if(Math.abs(mPosY)>getMeasuredHeight()/2) {
-				if(mPosY>0)
-					mPosY-=20;
+			if (Math.abs(mPosY) > getMeasuredHeight() / 2) {
+				if (mPosY > 0)
+					mPosY -= 20;
 				else
-					mPosY+=20;
+					mPosY += 20;
 				return true;
 			}
 			final float dx = x - mLastTouchX;
@@ -112,7 +115,6 @@ public class CustomLayout extends RelativeLayout {
 			mPosY += dy;
 
 			requestLayout();
-			
 
 			mLastTouchX = x;
 			mLastTouchY = y;
@@ -150,11 +152,14 @@ public class CustomLayout extends RelativeLayout {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		for(int i=0;i<getChildCount();i++) {
-			ObjectView v =(ObjectView) getChildAt(i);
+		for (int i = 0; i < getChildCount(); i++) {
+			ObjectView v = (ObjectView) getChildAt(i);
 			ObjectView ancester = v.getAncester();
-			if(ancester!=null) {
-				canvas.drawLine(v.getX()+v.getMeasuredWidth()/2, v.getY(), ancester.getX()+ancester.getMeasuredWidth()/2, ancester.getY()+ancester.getMeasuredHeight(), paintLine);
+			if (ancester != null) {
+				canvas.drawLine(v.getX() + v.getMeasuredWidth() / 2, v.getY(),
+						ancester.getX() + ancester.getMeasuredWidth() / 2,
+						ancester.getY() + ancester.getMeasuredHeight(),
+						paintLine);
 			}
 		}
 	}
@@ -167,7 +172,7 @@ public class CustomLayout extends RelativeLayout {
 		int currentLongestWidth = 0;
 		int currentLongestHeight = 0;
 		int currentLevel = 0;
-		int childNumberLevel=0;
+		int childNumberLevel = 0;
 		for (int i = 0; i < getChildCount(); i++) {
 			final ObjectView v = (ObjectView) getChildAt(i);
 			if (v.getVisibility() != GONE) {
@@ -176,13 +181,14 @@ public class CustomLayout extends RelativeLayout {
 				if (v.getLevel() == currentLevel) { // Si on est sur le meme
 					childNumberLevel++;
 					childByLevels.put(v.getLevel(), childNumberLevel);
-					currentLongestWidth += v.getMeasuredWidth() + 10; 
+					currentLongestWidth += v.getMeasuredWidth() + 10;
 					if (v.getMeasuredHeight() > currentLongestHeight)
 						currentLongestHeight = v.getMeasuredHeight();
 				}
-				if (v.getLevel() != currentLevel) {// on change de niveau dans l'arbre
-					maxHeightByLevels.put(currentLevel,currentLongestHeight);
-					childNumberLevel=1;
+				if (v.getLevel() != currentLevel) {// on change de niveau dans
+													// l'arbre
+					maxHeightByLevels.put(currentLevel, currentLongestHeight);
+					childNumberLevel = 1;
 					childByLevels.put(v.getLevel(), childNumberLevel);
 					currentLevel = v.getLevel();
 					if (currentLongestWidth > maxWidth) // Si la largeur du
@@ -191,13 +197,13 @@ public class CustomLayout extends RelativeLayout {
 														// autres niveaux
 						maxWidth = currentLongestWidth;
 					currentLongestWidth += v.getMeasuredWidth() + 10;
-					
+
 					maxHeight += currentLongestHeight + 20;
 					currentLongestHeight = v.getMeasuredHeight();
 				}
 			}
 		}
-		
+
 		final ObjectView lastchild = (ObjectView) getChildAt(getChildCount() - 1);
 		if (lastchild.getLevel() == currentLevel) {
 
@@ -205,54 +211,56 @@ public class CustomLayout extends RelativeLayout {
 												// niveau est plus grande que
 												// les autres niveaux
 				maxWidth = currentLongestWidth;
-			maxHeightByLevels.put(currentLevel,currentLongestHeight);
+			maxHeightByLevels.put(currentLevel, currentLongestHeight);
 			maxHeight += currentLongestHeight + 20;
 		}
-		
-		
-		if(maxWidth > screen .x)
-			setMeasuredDimension(maxWidth , screen.y);
-		
-		else if(maxHeight>screen.y) 
+
+		if (maxWidth > screen.x)
+			setMeasuredDimension(maxWidth, screen.y);
+
+		else if (maxHeight > screen.y)
 			setMeasuredDimension(screen.x, maxHeight);
-			
-		else if(maxWidth > screen .x && maxHeight>screen.y) 
+
+		else if (maxWidth > screen.x && maxHeight > screen.y)
 			setMeasuredDimension(maxWidth, maxHeight);
-		
-		else 
+
+		else
 			setMeasuredDimension(screen.x, screen.y);
-			
+
 	}
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		int currentLevel=0;
+		int currentLevel = 0;
 		int renderedLevelChild = -1;
 		for (int i = 0; i < getChildCount(); i++) {
-			ObjectView child = (ObjectView)getChildAt(i);
+			ObjectView child = (ObjectView) getChildAt(i);
 			int numberOfChildInLevel = childByLevels.get(child.getLevel());
-			
-			if(child.getLevel() ==currentLevel)
+
+			if (child.getLevel() == currentLevel)
 				renderedLevelChild++;
 			else {
-				currentLevel=child.getLevel();
-				renderedLevelChild=0;
+				currentLevel = child.getLevel();
+				renderedLevelChild = 0;
 			}
-				
-			int leftMargin = getMeasuredWidth()/(numberOfChildInLevel+1) + 150*renderedLevelChild;
-			int top=40;
-			if(child.getLevel() !=0) {
+
+			int leftMargin = getMeasuredWidth() / (numberOfChildInLevel + 1)
+					+ 150 * renderedLevelChild;
+			int top = 40;
+			if (child.getLevel() != 0) {
 				int currentlevel = child.getLevel();
-				while(currentlevel>0) {
-					top+=maxHeightByLevels.get(currentlevel-1);
+				while (currentlevel > 0) {
+					top += maxHeightByLevels.get(currentlevel - 1);
 					currentlevel--;
 				}
-				top+=50*child.getLevel();
-				
+				top += 50 * child.getLevel();
+
 			}
-			
-			
-			child.layout(Math.round(mPosX)+leftMargin,Math.round(mPosY)+ top, Math.round(mPosX)+leftMargin+child.getMeasuredWidth(),Math.round(mPosY)+ top+child.getMeasuredHeight());
+
+			child.layout(Math.round(mPosX) + leftMargin, Math.round(mPosY)
+					+ top,
+					Math.round(mPosX) + leftMargin + child.getMeasuredWidth(),
+					Math.round(mPosY) + top + child.getMeasuredHeight());
 		}
 	}
 

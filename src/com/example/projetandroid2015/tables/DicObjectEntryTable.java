@@ -7,7 +7,7 @@ public class DicObjectEntryTable {
 	// Database Table
 	public static final String TABLE_NAME = "DicObjectEntry";
 	public static final String COLUMN_ID = "_id";
-	public static final String COLUMN_ID2 = "_id";
+	public static final String COLUMN_ID2 = "_iddo";
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
@@ -15,7 +15,7 @@ public class DicObjectEntryTable {
 			+ " VARCHAR(50) NOT NULL, PRIMARY KEY (" + COLUMN_ID + ", "
 			+ COLUMN_ID2 + "), FOREIGN KEY (" + COLUMN_ID
 			+ ") REFERENCES Entry(" + COLUMN_ID + "), FOREIGN KEY ("
-			+ COLUMN_ID2 + ") REFERENCES DicoObject(" + COLUMN_ID2 + "));";
+			+ COLUMN_ID2 + ") REFERENCES DicoObject(" + COLUMN_ID + "));";
 
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);

@@ -14,7 +14,7 @@ public class EntryTable {
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
 			+ "(" + COLUMN_ID + " INTEGER NOT NULL, " + NAME
 			+ " VARCHAR(50) NOT NULL, " + ENTRYTYPE
-			+ " ENUM('ObjectEntry', 'PrimitiveEntry'), PRIMARY KEY ("
+			+ " VARCHAR(50), PRIMARY KEY ("
 			+ COLUMN_ID + "));";
 
 	public static void onCreate(SQLiteDatabase database) {
