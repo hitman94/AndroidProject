@@ -3,8 +3,8 @@ package views;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.projetandroid2015.activities.Galaxy;
-import com.example.projetandroid2015.activities.MainActivity;
+import com.example.androidproject.activities.Galaxy;
+import com.example.androidproject.activities.MainActivity;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,8 +1,9 @@
-package com.example.projetandroid2015.activities;
+package com.example.androidproject.activities;
 
 import views.CustomLayout;
 import views.ObjectView;
 import android.app.Activity;
+import android.content.ContentProvider;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,14 +12,18 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
+import com.example.projectandroid2015.util.ContentProviderUtil;
 
 public class Galaxy extends Activity {
 
 	private Menu menu;
 	private CustomLayout rl;
+	public static ContentProviderUtil contentUtils;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        contentUtils= new ContentProviderUtil(this);
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);

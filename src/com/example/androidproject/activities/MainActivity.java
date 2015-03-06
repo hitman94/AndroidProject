@@ -1,4 +1,4 @@
-package com.example.projetandroid2015.activities;
+package com.example.androidproject.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
