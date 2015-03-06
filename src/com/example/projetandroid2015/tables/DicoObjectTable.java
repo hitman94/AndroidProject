@@ -8,15 +8,13 @@ public class DicoObjectTable {
 	public static final String TABLE_NAME = "DicoObject";
 	public static final String COLUMN_ID = "_id";
 	public static final String SEALED = "sealed";
-	public static final String ANCESTOR = "ancestor";
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
 			+ "(" + COLUMN_ID + " VARCHAR(50) NOT NULL, " + SEALED
-			+ " BOOLEAN NOT NULL," + ANCESTOR + " VARCHAR(50), PRIMARY KEY (" + COLUMN_ID
+			+ " BOOLEAN NOT NULL, PRIMARY KEY (" + COLUMN_ID
 			+ "), FOREIGN KEY (" + COLUMN_ID + ") REFERENCES Object("
-			+ COLUMN_ID + "), FOREIGN KEY ("
-			+ ANCESTOR + ") REFERENCES DicoObject(" + COLUMN_ID + "));";
+			+ COLUMN_ID + "));";
 
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);
@@ -24,7 +22,7 @@ public class DicoObjectTable {
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 			int newVersion) {
-		Log.w(RootObjectTable.class.getName(),
+		Log.w(DicoObjectTable.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion + ", which will destroy all old data");
 		database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);

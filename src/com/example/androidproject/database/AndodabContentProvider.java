@@ -22,15 +22,12 @@ import com.example.projetandroid2015.tables.ObjectPPrimitiveTable;
 import com.example.projetandroid2015.tables.ObjectTable;
 import com.example.projetandroid2015.tables.PrimitiveEntryTable;
 import com.example.projetandroid2015.tables.PrimitiveObjectTable;
-import com.example.projetandroid2015.tables.RootObjectTable;
 
 public class AndodabContentProvider extends ContentProvider {
 
 	// database declarations
-	RootObjectTable rootTable;
 	AndodabDatabaseHelper dbHelper;
 	private SQLiteDatabase database;
-	public static int IDROOT_VALUE;
 
 	// fields for the content provider
 	static final String AUTHORITY = "com.example.andodab.provider.Andodab";
@@ -44,8 +41,6 @@ public class AndodabContentProvider extends ContentProvider {
 	static final String DICOOBJENTRY_PATH = "dicoobjentry";
 	static final String DICOOBJ_PATH = "dicoobj";
 
-	public static final Uri CONTENT_URI_ROOT = Uri.parse("content://"
-			+ AUTHORITY + "/" + ROOT_PATH);
 	public static final Uri CONTENT_URI_OBJECT = Uri.parse("content://"
 			+ AUTHORITY + "/" + OBJECT_PATH);
 	public static final Uri CONTENT_URI_OBJECTENTRY = Uri.parse("content://"
@@ -64,8 +59,6 @@ public class AndodabContentProvider extends ContentProvider {
 			+ AUTHORITY + "/" + DICOOBJ_PATH);
 
 	// integer values used in content URI
-	static final int ROOT = 00;
-	static final int ROOT_ID = 01;
 	static final int OBJECT = 10;
 	static final int OBJECT_ID = 11;
 	static final int OBJECTENTRY = 20;
@@ -89,8 +82,6 @@ public class AndodabContentProvider extends ContentProvider {
 	static final UriMatcher sURIMatcher;
 	static {
 		sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		sURIMatcher.addURI(AUTHORITY, ROOT_PATH, ROOT);
-		sURIMatcher.addURI(AUTHORITY, ROOT_PATH + "/#", ROOT_ID);
 		sURIMatcher.addURI(AUTHORITY, OBJECT_PATH, OBJECT);
 		sURIMatcher.addURI(AUTHORITY, OBJECT_PATH + "/#", OBJECT_ID);
 		sURIMatcher.addURI(AUTHORITY, OBJECTENTRY_PATH, OBJECTENTRY);
@@ -134,16 +125,6 @@ public class AndodabContentProvider extends ContentProvider {
 
 		switch (sURIMatcher.match(uri)) {
 		// Map all database column names
-		case ROOT:
-			queryBuilder.setTables(RootObjectTable.TABLE_NAME);
-			queryBuilder.setProjectionMap(map);
-			break;
-
-		case ROOT_ID:
-			queryBuilder.setTables(RootObjectTable.TABLE_NAME);
-			queryBuilder.appendWhere(RootObjectTable.COLUMN_ID + "="
-					+ uri.getLastPathSegment());
-			break;
 		case OBJECT:
 			queryBuilder.setTables(ObjectTable.TABLE_NAME);
 			queryBuilder.setProjectionMap(map);
@@ -224,7 +205,7 @@ public class AndodabContentProvider extends ContentProvider {
 			queryBuilder.appendWhere(DicoObjectTable.COLUMN_ID + "="
 					+ uri.getLastPathSegment());
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
@@ -239,70 +220,25 @@ public class AndodabContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public String getType(Uri uri) {
-		switch (sURIMatcher.match(uri)) {
-		case ROOT:
-			return "vnd.android.cursor.dir/vnd.example.root";
-		case ROOT_ID:
-			return "vnd.android.cursor.item/vnd.example.root";
-		default:
-			throw new IllegalArgumentException("Unsupported URI: " + uri);
-		}
-	}
-
-	public void setRoot() {
-		Cursor c = database.rawQuery("SELECT * FROM RootObject", null);
-
-		IDROOT_VALUE = Integer.parseInt(c.getString(c
-				.getColumnIndex(RootObjectTable.COLUMN_ID)));
-	}
-
-	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		int uriType = sURIMatcher.match(uri);
 		long id = 0;
 
 		switch (uriType) {
-		case ROOT:
-			try {
-				Integer.parseInt(values.getAsString(RootObjectTable.COLUMN_ID));
-
-				Cursor c = database.rawQuery("SELECT * FROM RootObject", null);
-
-				if (!c.moveToFirst()) {
-					id = database
-							.insert(RootObjectTable.TABLE_NAME, "", values);
-				} else {
-					Toast.makeText(getContext(),
-							"You can't have more than one root !",
-							Toast.LENGTH_LONG).show();
-					return uri;
-				}
-			} catch (NumberFormatException nfe) {
-				Toast.makeText(getContext(),
-						"The id for root you entered is not an integer !",
-						Toast.LENGTH_LONG).show();
-				return uri;
-			}
-
-			// if record is added successfully
-			if (id > 0) {
-				Uri newuri = ContentUris.withAppendedId(CONTENT_URI_ROOT, id);
-				getContext().getContentResolver().notifyChange(newuri, null);
-				return newuri;
-			}
-			break;
-
 		case OBJECT:
 			String toAdd = values.getAsString(ObjectTable.COLUMN_ID);
 			String tmp;
 
 			if (!toAdd.equals("")) {
-				String ancestor = values.getAsString(DicoObjectTable.ANCESTOR);
 				String sealed = values.getAsString(DicoObjectTable.SEALED);
-
-				values.remove(DicoObjectTable.ANCESTOR);
 				values.remove(DicoObjectTable.SEALED);
+
+				// meaning the ancestor is the root
+				if (values.get(ObjectTable.ANCESTOR) == null
+						&& !(values.getAsString(ObjectTable.COLUMN_ID)
+								.equals("root"))) {
+					values.put(ObjectTable.ANCESTOR, "root");
+				}
 
 				id = database.insert(ObjectTable.TABLE_NAME, "", values);
 				tmp = values.getAsString(ObjectTable.OBJECT_TYPE);
@@ -313,7 +249,6 @@ public class AndodabContentProvider extends ContentProvider {
 					ContentValues val_object = new ContentValues();
 					val_object.put(DicoObjectTable.COLUMN_ID, toAdd);
 					val_object.put(DicoObjectTable.SEALED, sealed);
-					val_object.put(DicoObjectTable.ANCESTOR, ancestor);
 
 					database.insert(DicoObjectTable.TABLE_NAME, "", val_object);
 				} else if (tmp.toUpperCase().equals("PRIMITIVE")) {
@@ -409,6 +344,9 @@ public class AndodabContentProvider extends ContentProvider {
 
 		case OBJECTPRIMITIVE:
 			if (values.get(PrimitiveObjectTable.COLUMN_ID) != null) {
+				if (values.get(PrimitiveObjectTable.ANCESTOR) == null) {
+					values.put(PrimitiveObjectTable.ANCESTOR, "root");
+				}
 				id = database.insert(PrimitiveObjectTable.TABLE_NAME, "",
 						values);
 			} else {
@@ -619,5 +557,11 @@ public class AndodabContentProvider extends ContentProvider {
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
+	}
+
+	@Override
+	public String getType(Uri arg0) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

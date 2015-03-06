@@ -19,7 +19,6 @@ import com.example.projetandroid2015.tables.ObjectPPrimitiveTable;
 import com.example.projetandroid2015.tables.ObjectTable;
 import com.example.projetandroid2015.tables.PrimitiveEntryTable;
 import com.example.projetandroid2015.tables.PrimitiveObjectTable;
-import com.example.projetandroid2015.tables.RootObjectTable;
 
 public class ContentProviderUtil  {
 	private static final int rootValue = 99999999;
@@ -39,7 +38,7 @@ public class ContentProviderUtil  {
 	}
 
 	public void showElement(View view) {
-		showRoot(view);
+		//showRoot(view);
 		showObject(view);
 		showDicoObject(view);
 		showPPObject(view);
@@ -52,8 +51,10 @@ public class ContentProviderUtil  {
 
 	public void addRoot(View view) {
 		ContentValues values = new ContentValues();
-		values.put(RootObjectTable.COLUMN_ID, rootValue);
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ROOT,
+		values.put(ObjectTable.COLUMN_ID, "root");
+		values.put(ObjectTable.OBJECT_TYPE, "Object");
+		values.put(DicoObjectTable.SEALED, "false");
+		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		Toast.makeText(context, "Andodab : root inserted!",
@@ -66,38 +67,33 @@ public class ContentProviderUtil  {
 		// Dico Objects
 		values.put(ObjectTable.COLUMN_ID, "Food");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Animal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Mammal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
-		values.put(DicoObjectTable.ANCESTOR, "Animal");
+		values.put(ObjectTable.ANCESTOR, "Animal");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Eucalyptus");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
-		values.put(DicoObjectTable.ANCESTOR, "Food");
+		values.put(ObjectTable.ANCESTOR, "Food");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Koala");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
-		values.put(DicoObjectTable.ANCESTOR, "Animal");
+		values.put(ObjectTable.ANCESTOR, "Animal");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
@@ -107,19 +103,16 @@ public class ContentProviderUtil  {
 		// PPrimitiveObjects
 		values.put(ObjectTable.COLUMN_ID, "String");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
-		values.put(ObjectTable.ROOT, rootValue);
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Float");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
-		values.put(ObjectTable.ROOT, rootValue);
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Integer");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
-		values.put(ObjectTable.ROOT, rootValue);
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
@@ -224,25 +217,6 @@ public class ContentProviderUtil  {
 				Toast.LENGTH_LONG).show();
 	}
 
-	public void showRoot(View view) {
-		// Show all the roots sorted by ids
-		String URL = "content://com.example.andodab.provider.Andodab/root";
-		Uri roots = Uri.parse(URL);
-
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
-		String result = "Root results : ";
-		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
-					.show();
-		} else {
-			do {
-				result = result + "\n"
-						+ c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID));
-			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-		}
-	}
-
 	public void showObject(View view) {
 		String URL = "content://com.example.andodab.provider.Andodab/object";
 		Uri roots = Uri.parse(URL);
@@ -259,7 +233,8 @@ public class ContentProviderUtil  {
 						+ c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID))
 						+ " "
 						+ c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE))
-						+ " " + c.getString(c.getColumnIndex(ObjectTable.ROOT));
+						+ " "
+						+ c.getString(c.getColumnIndex(ObjectTable.ANCESTOR));
 			} while (c.moveToNext());
 			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
 		}
@@ -280,9 +255,6 @@ public class ContentProviderUtil  {
 						+ "\n"
 						+ c.getString(c
 								.getColumnIndex(DicoObjectTable.COLUMN_ID))
-						+ " "
-						+ c.getString(c
-								.getColumnIndex(DicoObjectTable.ANCESTOR))
 						+ " "
 						+ c.getString(c.getColumnIndex(DicoObjectTable.SEALED));
 			} while (c.moveToNext());
@@ -411,7 +383,6 @@ public class ContentProviderUtil  {
 					.show();
 		} else {
 			do {
-				String ancestor = null;
 				Cursor cDO = context.getContentResolver()
 						.query(Uri
 								.parse("content://com.example.andodab.provider.Andodab/dicoobj"),
@@ -497,8 +468,8 @@ public class ContentProviderUtil  {
 					c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID)));
 			data.put(ObjectTable.OBJECT_TYPE,
 					c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE)));
-			data.put(ObjectTable.ROOT,
-					c.getString(c.getColumnIndex(ObjectTable.ROOT)));
+			data.put(ObjectTable.ANCESTOR,
+					c.getString(c.getColumnIndex(ObjectTable.ANCESTOR)));
 		}
 
 		if (data.get(ObjectTable.OBJECT_TYPE).toUpperCase().equals("OBJECT")) {
@@ -513,8 +484,6 @@ public class ContentProviderUtil  {
 		if (!c.moveToFirst()) {
 			return data;
 		} else {
-			data.put(DicoObjectTable.ANCESTOR,
-					c.getString(c.getColumnIndex(DicoObjectTable.ANCESTOR)));
 			data.put(DicoObjectTable.SEALED,
 					c.getString(c.getColumnIndex(DicoObjectTable.SEALED)));
 			return data;
@@ -602,5 +571,13 @@ public class ContentProviderUtil  {
 			} while (c.moveToNext());
 			return properties;
 		}
+	}
+
+	public void deleteRoot(View view) {
+		
+	}
+
+	public void updateRoot(View view) {
+		
 	}
 }

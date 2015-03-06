@@ -12,7 +12,6 @@ import com.example.projetandroid2015.tables.ObjectPPrimitiveTable;
 import com.example.projetandroid2015.tables.ObjectTable;
 import com.example.projetandroid2015.tables.PrimitiveEntryTable;
 import com.example.projetandroid2015.tables.PrimitiveObjectTable;
-import com.example.projetandroid2015.tables.RootObjectTable;
 
 public class AndodabDatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "AndodabDB";
@@ -25,7 +24,6 @@ public class AndodabDatabaseHelper extends SQLiteOpenHelper {
 	// Method called during the creation of the database
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		RootObjectTable.onCreate(database);
 		ObjectTable.onCreate(database);
 		ObjectEntryTable.onCreate(database);
 		ObjectPPrimitiveTable.onCreate(database);
@@ -42,7 +40,6 @@ public class AndodabDatabaseHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase database, int oldVersion,
 			int newVersion) {
 		DATABASE_VERSION += 1;
-		RootObjectTable.onUpgrade(database, oldVersion, newVersion);
 		ObjectTable.onUpgrade(database, oldVersion, newVersion);
 		ObjectEntryTable.onUpgrade(database, oldVersion, newVersion);
 		ObjectPPrimitiveTable.onUpgrade(database, oldVersion, newVersion);
