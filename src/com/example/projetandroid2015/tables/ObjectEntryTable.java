@@ -23,7 +23,7 @@ public class ObjectEntryTable {
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 			int newVersion) {
-		Log.w(RootObjectTable.class.getName(),
+		Log.w(ObjectEntryTable.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion + ", which will destroy all old data");
 		database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);

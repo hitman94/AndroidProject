@@ -13,7 +13,7 @@ public class PrimitiveObjectTable {
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
 			+ "(" + COLUMN_ID + " VARCHAR(50) NOT NULL, " + ANCESTOR
 			+ " VARCHAR(50) NOT NULL, PRIMARY KEY (" + COLUMN_ID
-			+ "), FOREIGN KEY (" + ANCESTOR + ") REFERENCES ObjectPPrimitive("
+			+ "), FOREIGN KEY (" + ANCESTOR + ") REFERENCES Object("
 			+ COLUMN_ID + "));";
 
 	public static void onCreate(SQLiteDatabase database) {
@@ -22,7 +22,7 @@ public class PrimitiveObjectTable {
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 			int newVersion) {
-		Log.w(RootObjectTable.class.getName(),
+		Log.w(PrimitiveObjectTable.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion + ", which will destroy all old data");
 		database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);

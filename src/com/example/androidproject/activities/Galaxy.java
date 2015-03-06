@@ -3,7 +3,6 @@ package com.example.androidproject.activities;
 import views.CustomLayout;
 import views.ObjectView;
 import android.app.Activity;
-import android.content.ContentProvider;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,8 +21,7 @@ public class Galaxy extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        contentUtils= new ContentProviderUtil(this);
+       
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);

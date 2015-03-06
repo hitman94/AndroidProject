@@ -1,15 +1,19 @@
 package com.example.projectandroid2015.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.androidproject.R;
 import com.example.androidproject.database.AndodabContentProvider;
 import com.example.projetandroid2015.tables.DicObjectEntryTable;
 import com.example.projetandroid2015.tables.DicoObjectTable;
@@ -19,15 +23,20 @@ import com.example.projetandroid2015.tables.ObjectPPrimitiveTable;
 import com.example.projetandroid2015.tables.ObjectTable;
 import com.example.projetandroid2015.tables.PrimitiveEntryTable;
 import com.example.projetandroid2015.tables.PrimitiveObjectTable;
-import com.example.projetandroid2015.tables.RootObjectTable;
 
-public class ContentProviderUtil  {
-	private static final int rootValue = 99999999;
-	
-	private Context context;
-	
-	public ContentProviderUtil(Context cont) {
-		this.context=cont;
+public class ContentProviderUtil extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
 	}
 
 	public void addElement(View view) {
@@ -39,7 +48,7 @@ public class ContentProviderUtil  {
 	}
 
 	public void showElement(View view) {
-		showRoot(view);
+		Log.e(STORAGE_SERVICE, getProperties("Koala").toString());
 		showObject(view);
 		showDicoObject(view);
 		showPPObject(view);
@@ -52,11 +61,13 @@ public class ContentProviderUtil  {
 
 	public void addRoot(View view) {
 		ContentValues values = new ContentValues();
-		values.put(RootObjectTable.COLUMN_ID, rootValue);
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ROOT,
+		values.put(ObjectTable.COLUMN_ID, "root");
+		values.put(ObjectTable.OBJECT_TYPE, "Object");
+		values.put(DicoObjectTable.SEALED, "false");
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
-		Toast.makeText(context, "Andodab : root inserted!",
+		Toast.makeText(getBaseContext(), "Andodab : root inserted!",
 				Toast.LENGTH_LONG).show();
 	}
 
@@ -66,40 +77,35 @@ public class ContentProviderUtil  {
 		// Dico Objects
 		values.put(ObjectTable.COLUMN_ID, "Food");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
 		values.put(DicoObjectTable.SEALED, "false");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Animal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
 		values.put(DicoObjectTable.SEALED, "false");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Mammal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
-		values.put(DicoObjectTable.ANCESTOR, "Animal");
+		values.put(ObjectTable.ANCESTOR, "Animal");
 		values.put(DicoObjectTable.SEALED, "false");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Eucalyptus");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
-		values.put(DicoObjectTable.ANCESTOR, "Food");
+		values.put(ObjectTable.ANCESTOR, "Food");
 		values.put(DicoObjectTable.SEALED, "false");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Koala");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
-		values.put(ObjectTable.ROOT, rootValue);
-		values.put(DicoObjectTable.ANCESTOR, "Animal");
+		values.put(ObjectTable.ANCESTOR, "Animal");
 		values.put(DicoObjectTable.SEALED, "false");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.clear();
@@ -107,23 +113,20 @@ public class ContentProviderUtil  {
 		// PPrimitiveObjects
 		values.put(ObjectTable.COLUMN_ID, "String");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
-		values.put(ObjectTable.ROOT, rootValue);
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Float");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
-		values.put(ObjectTable.ROOT, rootValue);
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
 		values.put(ObjectTable.COLUMN_ID, "Integer");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
-		values.put(ObjectTable.ROOT, rootValue);
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_OBJECT,
 				values);
 
-		Toast.makeText(context, "Andodab : Objects inserted!",
+		Toast.makeText(getBaseContext(), "Andodab : Objects inserted!",
 				Toast.LENGTH_LONG).show();
 	}
 
@@ -132,20 +135,25 @@ public class ContentProviderUtil  {
 
 		values.put(PrimitiveObjectTable.COLUMN_ID, "6723");
 		values.put(PrimitiveObjectTable.ANCESTOR, "Integer");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
 
 		values.put(PrimitiveObjectTable.COLUMN_ID, "100.0");
 		values.put(PrimitiveObjectTable.ANCESTOR, "Float");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
 
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Fougere");
 		values.put(PrimitiveObjectTable.ANCESTOR, "String");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
+				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
+		
+		values.clear();
+		values.put(PrimitiveObjectTable.COLUMN_ID, "Banane");
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
 
-		Toast.makeText(context,
+		Toast.makeText(getBaseContext(),
 				"Andodab : Primitive Objects inserted!", Toast.LENGTH_LONG)
 				.show();
 	}
@@ -158,21 +166,21 @@ public class ContentProviderUtil  {
 		values.put(EntryTable.NAME, "energyDensity");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, "Float");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
 				values);
 
 		values.put(EntryTable.COLUMN_ID, "2");
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, "Food");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
 				values);
 
 		values.put(EntryTable.COLUMN_ID, "3");
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, "Eucalyptus");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
 				values);
 
 		// PrimitiveEntry
@@ -180,10 +188,10 @@ public class ContentProviderUtil  {
 		values.put(EntryTable.NAME, "energyDensity");
 		values.put(EntryTable.ENTRYTYPE, "Primitive");
 		values.put(ObjectEntryTable.VALUE, "100.0");
-		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
+		getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
 				values);
 
-		Toast.makeText(context, "Andodab : Entry inserted!",
+		Toast.makeText(getBaseContext(), "Andodab : Entry inserted!",
 				Toast.LENGTH_LONG).show();
 	}
 
@@ -192,65 +200,46 @@ public class ContentProviderUtil  {
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "1");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Food");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "2");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Animal");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "3");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Eucalyptus");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "4");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Koala");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "2");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Koala");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "2");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Mammal");
-		context.getContentResolver().insert(
+		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
-		Toast.makeText(context, "Andodab : DicoObjectEntry inserted!",
+		Toast.makeText(getBaseContext(), "Andodab : DicoObjectEntry inserted!",
 				Toast.LENGTH_LONG).show();
-	}
-
-	public void showRoot(View view) {
-		// Show all the roots sorted by ids
-		String URL = "content://com.example.andodab.provider.Andodab/root";
-		Uri roots = Uri.parse(URL);
-
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
-		String result = "Root results : ";
-		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
-					.show();
-		} else {
-			do {
-				result = result + "\n"
-						+ c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID));
-			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-		}
 	}
 
 	public void showObject(View view) {
 		String URL = "content://com.example.andodab.provider.Andodab/object";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "Object results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -259,9 +248,10 @@ public class ContentProviderUtil  {
 						+ c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID))
 						+ " "
 						+ c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE))
-						+ " " + c.getString(c.getColumnIndex(ObjectTable.ROOT));
+						+ " "
+						+ c.getString(c.getColumnIndex(ObjectTable.ANCESTOR));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -269,10 +259,10 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/dicoobj";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "DicoObject results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -281,12 +271,9 @@ public class ContentProviderUtil  {
 						+ c.getString(c
 								.getColumnIndex(DicoObjectTable.COLUMN_ID))
 						+ " "
-						+ c.getString(c
-								.getColumnIndex(DicoObjectTable.ANCESTOR))
-						+ " "
 						+ c.getString(c.getColumnIndex(DicoObjectTable.SEALED));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -294,10 +281,10 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/objectpprimitive";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "ObjectPPrimitive results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -306,7 +293,7 @@ public class ContentProviderUtil  {
 						+ c.getString(c
 								.getColumnIndex(ObjectPPrimitiveTable.COLUMN_ID));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -314,10 +301,10 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/objectprimitive";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "PrimitiveObject results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -329,7 +316,7 @@ public class ContentProviderUtil  {
 						+ c.getString(c
 								.getColumnIndex(PrimitiveObjectTable.ANCESTOR));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -337,10 +324,10 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/entry";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "Entry results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -350,7 +337,7 @@ public class ContentProviderUtil  {
 						+ c.getString(c.getColumnIndex(EntryTable.ENTRYTYPE))
 						+ " " + c.getString(c.getColumnIndex(EntryTable.NAME));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -358,10 +345,10 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/objectentry";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "ObjectEntry results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -372,7 +359,7 @@ public class ContentProviderUtil  {
 						+ " "
 						+ c.getString(c.getColumnIndex(ObjectEntryTable.VALUE));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -380,10 +367,10 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/primitiveentry";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, null, null, "_id");
+		Cursor c = getContentResolver().query(roots, null, null, null, "_id");
 		String result = "PrimitiveEntry results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
@@ -395,7 +382,7 @@ public class ContentProviderUtil  {
 						+ c.getString(c
 								.getColumnIndex(PrimitiveEntryTable.VALUE));
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -403,16 +390,15 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/dicoobjentry";
 		Uri roots = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(roots, null, "_idDO = 'Koala'",
+		Cursor c = getContentResolver().query(roots, null, "_idDO = 'Koala'",
 				null, "_id");
 		String result = "DicoObjectEntry results : ";
 		if (!c.moveToFirst()) {
-			Toast.makeText(context, result + " no content yet", Toast.LENGTH_LONG)
+			Toast.makeText(this, result + " no content yet", Toast.LENGTH_LONG)
 					.show();
 		} else {
 			do {
-				String ancestor = null;
-				Cursor cDO = context.getContentResolver()
+				Cursor cDO = getContentResolver()
 						.query(Uri
 								.parse("content://com.example.andodab.provider.Andodab/dicoobj"),
 								null,
@@ -422,10 +408,10 @@ public class ContentProviderUtil  {
 										+ "'", null, "_id");
 
 				if (!cDO.moveToFirst()) {
-					Toast.makeText(context, result + " no content yet",
+					Toast.makeText(this, result + " no content yet",
 							Toast.LENGTH_LONG).show();
 				} else {
-					Cursor cE = context.getContentResolver()
+					Cursor cE = getContentResolver()
 							.query(Uri
 									.parse("content://com.example.andodab.provider.Andodab/entry"),
 									null,
@@ -435,14 +421,14 @@ public class ContentProviderUtil  {
 									null, "_id");
 
 					if (!cE.moveToFirst()) {
-						Toast.makeText(context, result + " no content yet",
+						Toast.makeText(this, result + " no content yet",
 								Toast.LENGTH_LONG).show();
 					} else {
 						Cursor detailEntry;
 						if (cE.getString(
 								cE.getColumnIndex(EntryTable.ENTRYTYPE))
 								.toUpperCase().equals("OBJECT")) {
-							detailEntry = context.getContentResolver()
+							detailEntry = getContentResolver()
 									.query(Uri
 											.parse("content://com.example.andodab.provider.Andodab/objectentry"),
 											null,
@@ -451,7 +437,7 @@ public class ContentProviderUtil  {
 															.getColumnIndex(EntryTable.COLUMN_ID)),
 											null, "_id");
 						} else {
-							detailEntry = context.getContentResolver()
+							detailEntry = getContentResolver()
 									.query(Uri
 											.parse("content://com.example.andodab.provider.Andodab/primitiveentry"),
 											null,
@@ -461,7 +447,7 @@ public class ContentProviderUtil  {
 											null, "_id");
 						}
 						if (!detailEntry.moveToFirst()) {
-							Toast.makeText(context, result + " no content yet",
+							Toast.makeText(this, result + " no content yet",
 									Toast.LENGTH_LONG).show();
 						} else {
 							result = result
@@ -476,7 +462,7 @@ public class ContentProviderUtil  {
 					}
 				}
 			} while (c.moveToNext());
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -487,7 +473,7 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/object";
 		Uri objects = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(objects, null,
+		Cursor c = getContentResolver().query(objects, null,
 				"_id = '" + objectID + "'", null, "_id");
 
 		if (!c.moveToFirst()) {
@@ -497,8 +483,8 @@ public class ContentProviderUtil  {
 					c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID)));
 			data.put(ObjectTable.OBJECT_TYPE,
 					c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE)));
-			data.put(ObjectTable.ROOT,
-					c.getString(c.getColumnIndex(ObjectTable.ROOT)));
+			data.put(ObjectTable.ANCESTOR,
+					c.getString(c.getColumnIndex(ObjectTable.ANCESTOR)));
 		}
 
 		if (data.get(ObjectTable.OBJECT_TYPE).toUpperCase().equals("OBJECT")) {
@@ -508,39 +494,15 @@ public class ContentProviderUtil  {
 		}
 
 		objects = Uri.parse(URL);
-		c = context.getContentResolver().query(objects, null,
+		c = getContentResolver().query(objects, null,
 				"_id = '" + objectID + "'", null, "_id");
 		if (!c.moveToFirst()) {
 			return data;
 		} else {
-			data.put(DicoObjectTable.ANCESTOR,
-					c.getString(c.getColumnIndex(DicoObjectTable.ANCESTOR)));
 			data.put(DicoObjectTable.SEALED,
 					c.getString(c.getColumnIndex(DicoObjectTable.SEALED)));
 			return data;
 		}
-	}
-
-	// TODO méthode pour récupérer les enfants d'un dicoobject
-	public ArrayList<String> getChildren(String objectID) {
-		String URL = "content://com.example.andodab.provider.Andodab/dicoobject";
-		Uri roots = Uri.parse(URL);
-
-		ArrayList<String> children = new ArrayList<String>();
-
-		Cursor c = getContentResolver().query(roots, null,
-				"ancestor = '" + objectID + "'", null, "_id");
-
-		if (!c.moveToFirst()) {
-			return null;
-		} else {
-			do {
-				children.add(c.getString(c
-						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
-
-			} while (c.moveToNext());
-		}
-		return children;
 	}
 
 	// TODO Méthode avec hashmap pour les électriciens
@@ -549,14 +511,14 @@ public class ContentProviderUtil  {
 		String URL = "content://com.example.andodab.provider.Andodab/dicoobjentry";
 		Uri doe = Uri.parse(URL);
 
-		Cursor c = context.getContentResolver().query(doe, null,
+		Cursor c = getContentResolver().query(doe, null,
 				"_idDO = '" + objectID + "'", null, "_id");
 
 		if (!c.moveToFirst()) {
 			return properties;
 		} else {
 			do {
-				Cursor cE = context.getContentResolver()
+				Cursor cE = getContentResolver()
 						.query(Uri
 								.parse("content://com.example.andodab.provider.Andodab/entry"),
 								null,
@@ -571,7 +533,7 @@ public class ContentProviderUtil  {
 					Cursor detailEntry;
 					if (cE.getString(cE.getColumnIndex(EntryTable.ENTRYTYPE))
 							.toUpperCase().equals("OBJECT")) {
-						detailEntry = context.getContentResolver()
+						detailEntry = getContentResolver()
 								.query(Uri
 										.parse("content://com.example.andodab.provider.Andodab/objectentry"),
 										null,
@@ -580,7 +542,7 @@ public class ContentProviderUtil  {
 														.getColumnIndex(EntryTable.COLUMN_ID)),
 										null, "_id");
 					} else {
-						detailEntry = context.getContentResolver()
+						detailEntry = getContentResolver()
 								.query(Uri
 										.parse("content://com.example.andodab.provider.Andodab/primitiveentry"),
 										null,
@@ -602,5 +564,13 @@ public class ContentProviderUtil  {
 			} while (c.moveToNext());
 			return properties;
 		}
+	}
+
+	public void deleteRoot(View view) {
+		
+	}
+
+	public void updateRoot(View view) {
+		
 	}
 }
