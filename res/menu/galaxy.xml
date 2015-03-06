@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.projetandroid2015.Galaxy" >
+
+    <item
+        android:id="@+id/tick"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Valider"
+        android:icon="@drawable/tick"
+        />
+
+</menu>
