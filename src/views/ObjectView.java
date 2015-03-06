@@ -11,6 +11,9 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.view.View;
 
+import com.example.androidproject.activities.Galaxy;
+import com.example.projectandroid2015.util.ContentProviderUtil;
+
 public class ObjectView extends View {
 	
 	private Rect rectangle;
@@ -21,9 +24,11 @@ public class ObjectView extends View {
 	private int yToDraw=15;
 	private int longestString=0;
 	private ObjectView ancester;
-	
+	private ContentProviderUtil utils;
 	public ObjectView(Context context,int level, String id,ObjectView ancester) {
+		
 		super(context);
+		this.utils = ((Galaxy)context).contentUtils;
 		paint = new Paint();
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.BLACK);
@@ -59,6 +64,7 @@ public class ObjectView extends View {
 				((CustomLayout)getParent()).removeLevel(view.getLevel()+1);
 				
 				//TODO get child from BDD
+				
 				((CustomLayout)getParent()).addView(new ObjectView(getContext(), view.getLevel()+1, "1", view));
 			}
 		});
