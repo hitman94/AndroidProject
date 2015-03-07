@@ -5,5 +5,17 @@
     <string name="title_activity_rea">Rea</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_createObjectAct">Creation of a new Object</string>
+    <string name="objectName">Object name</string>
+    <string name="hint_name">Object name</string>
+    <string name="preInherits">Inherits of : </string>
+    <string name="listviewInfo">Object propreties</string>
+    <string name="objname">Object Name : </string>
+    <string name="property_search_hint">Property name</string>
+    <string name="search_hint">Search or Create Property</string>
+    <string name="newProperty">New Property</string>
+    <string name="property_name">Property Name</string>
+    <string name="property_value">Property Value</string>
+    <string name="new_property_title">New property</string>
 
 </resources>
