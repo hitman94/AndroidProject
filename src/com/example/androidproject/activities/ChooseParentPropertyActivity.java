@@ -1,5 +1,9 @@
 package com.example.androidproject.activities;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Map;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,12 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
-import com.example.projetandroid2015.R;
-import com.example.androidproject.adapters.PropertiesAdaptaters;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Map;
+import com.example.androidproject.R;
 
 /**
  * Created by Florian on 04/03/2015.

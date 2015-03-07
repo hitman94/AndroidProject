@@ -492,7 +492,7 @@ public class ContentProviderUtil  {
 
 	// TODO méthode pour récupérer les enfants d'un dicoobject
 	public ArrayList<String> getChildren(String objectID) {
-		String URL = "content://com.example.andodab.provider.Andodab/dicoobj";
+		String URL = "content://com.example.andodab.provider.Andodab/object";
 		Uri roots = Uri.parse(URL);
 
 		ArrayList<String> children = new ArrayList<String>();

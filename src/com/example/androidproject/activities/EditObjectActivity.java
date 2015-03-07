@@ -8,9 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.example.projetandroid2015.R;
 
-import java.util.HashMap;
+import com.example.androidproject.R;
 
 /**
  * Created by Florian on 01/03/2015.

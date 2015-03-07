@@ -14,13 +14,22 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.Galaxy"
+            android:name="com.example.androidproject.activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name="com.example.androidproject.activities.EditObjectActivity"/>
+        <activity android:name="com.example.androidproject.activities.ChooseParentPropertyActivity"
+                  android:parentActivityName="com.example.androidproject.activities.EditObjectActivity" >
+                >
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable_properties">
+            </meta-data>
         </activity>
 
         <provider
