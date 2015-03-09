@@ -28,10 +28,10 @@ public class Galaxy extends Activity {
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);
+       
         ObjectView root=new ObjectView(this,0,"root",null);
         rl.addView(root);
-//        rl.addView(new ObjectView(this,1,"1566666666666666666666654",root));
-//        rl.addView(new ObjectView(this,1,"3",root));
+
         setContentView(rl);
        
     }

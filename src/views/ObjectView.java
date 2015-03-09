@@ -20,6 +20,7 @@ public class ObjectView extends View {
 	
 	private Rect rectProperties;
 	private Rect rectName;
+	private Rect rectCanvas;
 	private Paint paint;
 	private int level;
 	private String objectId;
@@ -41,6 +42,7 @@ public class ObjectView extends View {
 		initLongestString();
 		rectProperties = new Rect();
 		rectName = new Rect();
+		rectCanvas = new Rect();
 		this.ancester=ancester;
 		setLongClickable(true);
 		setClickable(true);
@@ -69,6 +71,8 @@ public class ObjectView extends View {
 				
 				//TODO get child from BDD
 				ArrayList<String> list = utils.getChildren(objectId);
+				if(list==null)
+					return;
 				for(String id : list)
 					((CustomLayout)getParent()).addView(new ObjectView(getContext(), view.getLevel()+1, id, view));
 			}
@@ -81,7 +85,7 @@ public class ObjectView extends View {
 	}
 	
 	private void initProperties() {
-		//TODO recupérer depuis la BDD
+		//TODO recupï¿½rer depuis la BDD
 		properties=new HashMap<String, String>();
 		if(!objectId.equals("root")) {
 			HashMap<String, String> map = utils.getProperties(objectId);
@@ -109,21 +113,24 @@ public class ObjectView extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int width = longestString * 8;
-		int height = properties.size() * 20 + 20; //Propriétés + nom objet
+		int height = properties.size() * 20 + 20; //PropriÃ©tÃ©s + nom objet
 		setMeasuredDimension(width, height);
 	}
 	
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
+//		float scale = ((CustomLayout)getParent()).getScaleFactor();
+//		canvas.scale(scale, scale);
+		canvas.getClipBounds(rectCanvas);
 		rectName.left=1;
 		rectName.top=1;
 		rectName.bottom=20;
-		rectName.right=getMeasuredWidth();
+		rectName.right=rectCanvas.right-1;
 		rectProperties.left=1;
 		rectProperties.top=20;
-		rectProperties.bottom=getMeasuredHeight();
-		rectProperties.right=getMeasuredWidth();
+		rectProperties.bottom=rectCanvas.bottom-1;
+		rectProperties.right=rectCanvas.right-1;
 		canvas.drawRect(rectProperties, paint);
 		canvas.drawRect(rectName, paint);
 		canvas.drawText(objectId, 5, 15, paint);

@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.example.androidproject.R;
+import com.example.androidproject.adapters.PropertiesAdaptaters;
 
 /**
  * Created by Florian on 04/03/2015.

@@ -3,21 +3,21 @@ package views;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.androidproject.activities.Galaxy;
-import com.example.androidproject.activities.MainActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
+import com.example.androidproject.activities.Galaxy;
 
 public class CustomLayout extends RelativeLayout {
 
@@ -37,7 +37,11 @@ public class CustomLayout extends RelativeLayout {
 	private Point screen = new Point();
 	private Paint paintLine = new Paint();
 	private View selectedObject = null;
+	
+	private ScaleGestureDetector sDectector;
+	private float scaleFactor=1.f;
 
+	
 	public CustomLayout(Context context) {
 		super(context);
 		WindowManager wm = (WindowManager) getContext().getSystemService(
@@ -48,6 +52,10 @@ public class CustomLayout extends RelativeLayout {
 		maxHeightByLevels = new HashMap<Integer, Integer>();
 		maxWidthByLevels = new HashMap<Integer, Integer>();
 		paintLine.setColor(Color.BLUE);
+		sDectector = new ScaleGestureDetector(getContext(), new ScaleListener());
+		
+
+		
 	}
 
 	public void setSelectedObject(View selected) {
@@ -80,7 +88,10 @@ public class CustomLayout extends RelativeLayout {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
-		// Let the ScaleGestureDetector inspect all events.
+		//Inspection de l'evenement courant
+		sDectector.onTouchEvent(ev);
+		
+		
 		final int action = ev.getAction();
 		switch (action & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN: {
@@ -98,28 +109,31 @@ public class CustomLayout extends RelativeLayout {
 			final float x = ev.getX(pointerIndex);
 			final float y = ev.getY(pointerIndex);
 
-			if (Math.abs(mPosX) > getMeasuredWidth() / 2) {
-				if (mPosX > 0)
-					mPosX -= 20;
-				else
-					mPosX += 20;
-				return true;
-			}
-			if (Math.abs(mPosY) > getMeasuredHeight() / 2) {
-				if (mPosY > 0)
-					mPosY -= 20;
-				else
-					mPosY += 20;
-				return true;
-			}
+//			if (Math.abs(mPosX) > getMeasuredWidth() / 2) {
+//				if (mPosX > 0)
+//					mPosX -= 20;
+//				else
+//					mPosX += 20;
+//				return true;
+//			}
+//			if (Math.abs(mPosY) > getMeasuredHeight() / 2) {
+//				if (mPosY > 0)
+//					mPosY -= 20;
+//				else
+//					mPosY += 20;
+//				return true;
+//			}
 			final float dx = x - mLastTouchX;
 			final float dy = y - mLastTouchY;
 
 			mPosX += dx;
 			mPosY += dy;
 
-			requestLayout();
-
+			for(int i=0;i<getChildCount();i++) {
+				getChildAt(i).setTranslationX(mPosX);
+				getChildAt(i).setTranslationY(mPosY);
+			}
+			invalidate();
 			mLastTouchX = x;
 			mLastTouchY = y;
 
@@ -177,8 +191,8 @@ public class CustomLayout extends RelativeLayout {
 		maxHeightByLevels.clear();
 		for (int i = 0; i < getChildCount(); i++) {
 			final ObjectView v = (ObjectView) getChildAt(i);
-			if (v.getVisibility() != GONE) {
 				measureChild(v, widthMeasureSpec, heightMeasureSpec);
+
 				if(childByLevels.get(v.getLevel())!=null)
 					childByLevels.put(v.getLevel(), childByLevels.get(v.getLevel())+1);
 				else 
@@ -200,7 +214,7 @@ public class CustomLayout extends RelativeLayout {
 				else 
 					maxHeightByLevels.put(v.getLevel(), v.getMeasuredHeight());
 				
-			}
+		
 		}
 		
 		for(int i : maxHeightByLevels.values())
@@ -209,13 +223,11 @@ public class CustomLayout extends RelativeLayout {
 		
 		
 		for(int j=0;j<maxWidthByLevels.size();j++) {
-			System.err.println("widht : "+maxWidthByLevels.get(j)+" level :"+j+" nombre d'enfants du niveau:"+childByLevels.get(j));
 			if(maxWidth< (maxWidthByLevels.get(j)*childByLevels.get(j)) + childByLevels.get(j)*WIDTH_MARGIN ) {
 				maxWidth = (maxWidthByLevels.get(j)*childByLevels.get(j)) + childByLevels.get(j)*WIDTH_MARGIN;
 			}
 		}
-			
-		System.err.println("widdth"+maxWidth+" height:"+maxHeight);
+				
 		
 		if (maxWidth > screen.x)
 			setMeasuredDimension(maxWidth, screen.y);
@@ -228,7 +240,7 @@ public class CustomLayout extends RelativeLayout {
 
 		else
 			setMeasuredDimension(screen.x, screen.y);
-
+		
 	}
 
 	@Override
@@ -246,8 +258,8 @@ public class CustomLayout extends RelativeLayout {
 				renderedLevelChild = 0;
 			}
 
-			int leftMargin = getMeasuredWidth() / (numberOfChildInLevel + 1) - WIDTH_MARGIN
-					+ (maxWidthByLevels.get(child.getLevel())+ WIDTH_MARGIN) * renderedLevelChild ;
+			int leftMargin =(int)( scaleFactor*(getMeasuredWidth() / (numberOfChildInLevel + 1) - WIDTH_MARGIN
+					+ (maxWidthByLevels.get(child.getLevel())+ WIDTH_MARGIN) * renderedLevelChild)) ;
 			
 			int top = 40;
 			if (child.getLevel() != 0) {
@@ -259,12 +271,32 @@ public class CustomLayout extends RelativeLayout {
 				top += 50 * child.getLevel();
 
 			}
+			top=(int)(top*scaleFactor);
+			child.layout(leftMargin, 
+					top,
+					leftMargin + child.getMeasuredWidth(),
+					top + child.getMeasuredHeight());
+			child.setScaleX(scaleFactor);
+			child.setScaleY(scaleFactor);
+			child.setTranslationX(mPosX);
+			child.setTranslationY(mPosY);
+		}
+		
+	}
+	
 
-			child.layout(Math.round(mPosX) + leftMargin, Math.round(mPosY)
-					+ top,
-					Math.round(mPosX) + leftMargin + child.getMeasuredWidth(),
-					Math.round(mPosY) + top + child.getMeasuredHeight());
+	
+	
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			 scaleFactor *= detector.getScaleFactor();
+
+		     // Don't let the object get too small or too large.
+			 scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f));
+			 requestLayout();
+	        return true;
+
 		}
 	}
-
 }
