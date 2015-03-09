@@ -35,13 +35,14 @@ public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
         filteredProps = list;
     }
 
+
     @Override
     public int getCount() {
         return filteredProps.size();
     }
 
     @Override
-    public Object getItem(int position) {
+    public Map.Entry<String,String> getItem(int position) {
         return filteredProps.get(position);
     }
 

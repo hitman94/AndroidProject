@@ -2,6 +2,7 @@ package com.example.projectandroid2015.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -451,7 +452,7 @@ public class ContentProviderUtil  {
 		}
 	}
 
-	// TODO Méthode pour récupérer un objet directement
+	// TODO Mï¿½thode pour rï¿½cupï¿½rer un objet directement
 	public HashMap<String, String> getObject(String objectID) {
 		HashMap<String, String> data = new HashMap<String, String>();
 
@@ -490,7 +491,7 @@ public class ContentProviderUtil  {
 		}
 	}
 
-	// TODO méthode pour récupérer les enfants d'un dicoobject
+	// TODO mï¿½thode pour rï¿½cupï¿½rer les enfants d'un dicoobject
 	public ArrayList<String> getChildren(String objectID) {
 		String URL = "content://com.example.andodab.provider.Andodab/object";
 		Uri roots = Uri.parse(URL);
@@ -512,7 +513,7 @@ public class ContentProviderUtil  {
 		return children;
 	}
 
-	// TODO Méthode avec hashmap pour les électriciens
+	// TODO Mï¿½thode avec hashmap pour les ï¿½lectriciens
 	public HashMap<String, String> getProperties(String objectID) {
 		HashMap<String, String> properties = new HashMap<String, String>();
 		String URL = "content://com.example.andodab.provider.Andodab/dicoobjentry";
@@ -572,6 +573,26 @@ public class ContentProviderUtil  {
 			return properties;
 		}
 	}
+
+
+
+    public HashMap<String,String> getParentProperties(String objectID){
+        HashMap<String, String> properties = new HashMap<String, String>();
+        HashMap<String, String> tmpProp;
+        HashMap<String,String> map = getObject(objectID);
+        String ancestor = map.get(ObjectTable.ANCESTOR);
+        while(ancestor !=null){
+            map = getObject(ancestor);
+            tmpProp = getProperties(ancestor);
+            for(Map.Entry<String,String> entry : tmpProp.entrySet()){
+                if(!properties.containsKey(entry.getKey())){
+                    properties.put(entry.getKey(),entry.getValue());
+                }
+            }
+            ancestor = map.get(ObjectTable.ANCESTOR);
+        }
+        return properties;
+    }
 
 	public void deleteRoot(View view) {
 		

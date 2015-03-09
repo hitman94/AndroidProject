@@ -17,5 +17,7 @@
     <string name="property_name">Property Name</string>
     <string name="property_value">Property Value</string>
     <string name="new_property_title">New property</string>
+    <string name="toastValueField">the Value field must be filled</string>
+    <string name="toastNameField">the Name field must be filled</string>
 
 </resources>

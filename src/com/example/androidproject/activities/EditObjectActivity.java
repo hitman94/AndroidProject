@@ -10,29 +10,63 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.androidproject.R;
+import com.example.androidproject.adapters.PropertiesAdaptaters;
+import com.example.projectandroid2015.util.ContentProviderUtil;
+import com.example.projetandroid2015.tables.ObjectTable;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Florian on 01/03/2015.
  */
 public class EditObjectActivity extends Activity {
 
-    private Long idParent;
+    private String idParent;
+    private String idObjet;
+    private Boolean edition;
+    private ContentProviderUtil util;
+    private ArrayList<Map.Entry<String,String>>properties;
+    private PropertiesAdaptaters adaptaters;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_object_layout);
         Intent i = getIntent();
-        idParent = getIntent().getLongExtra("idParent",-1L);
-        if(idParent == -1L){
-            //TODO par default on met l'ancetre Obj j'magine, je changerais ça qd j'aurais trouver comment accéder à l'obj ancetre
-            idParent = 0L;
-        }
-        //TODO recuperer le vrai objet de la BDD faut changer la tech aparament, genre un cursor trop cool
+        util = new ContentProviderUtil(this);
+        idObjet = getIntent().getStringExtra("idObjet");
+        properties = new ArrayList<Map.Entry<String,String>>();
 
         TextView tv = (TextView) findViewById(R.id.InheritsName);
 
+        if(idObjet == null) {
+            edition = false;
+
+            properties.add(new AbstractMap.SimpleEntry<String, String>("test","value"));
+            idParent = getIntent().getStringExtra("idParent");
+            if (idParent == null) {
+                idParent = "root";
+            }
+
+        }else{
+            edition = true;
+            HashMap<String,String> map = util.getProperties(idObjet);
+            HashMap<String,String> obj = util.getObject(idObjet);
+            idParent = obj.get(ObjectTable.ANCESTOR);
+            for(Map.Entry<String,String> entry : map.entrySet()){
+                properties.add(entry);
+            }
+            TextView tvName = (TextView) findViewById(R.id.objName);
+            tvName.setText(idObjet);
+        }
+        adaptaters = new PropertiesAdaptaters(this,properties);
+        tv.setText(idParent);
         ListView lv = (ListView) findViewById(R.id.listView);
+        lv.setAdapter(adaptaters);
+
 
     }
 
