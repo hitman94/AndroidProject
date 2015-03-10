@@ -37,7 +37,6 @@ public class CustomLayout extends RelativeLayout {
 	private Point screen = new Point();
 	private Paint paintLine = new Paint();
 	private View selectedObject = null;
-	
 	private ScaleGestureDetector sDectector;
 	private float scaleFactor=1.f;
 
@@ -57,6 +56,7 @@ public class CustomLayout extends RelativeLayout {
 
 		
 	}
+
 
 	public void setSelectedObject(View selected) {
 		if (selectedObject != null)

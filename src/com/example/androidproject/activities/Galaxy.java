@@ -17,24 +17,31 @@ public class Galaxy extends Activity {
 
 	private Menu menu;
 	private CustomLayout rl;
-	public static ContentProviderUtil contentUtils;
+	private boolean choosable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        contentUtils= new ContentProviderUtil(this);
-        contentUtils.addElement(null);
 
+        Intent i = getIntent();
+        choosable = i.getBooleanExtra("allowChoose", true);
+        
+        String rootId = i.getStringExtra("rootId");
+        if(rootId==null)
+        	rootId = new String("root");
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);
-       
-        ObjectView root=new ObjectView(this,0,"root",null);
+        
+        ObjectView root=new ObjectView(this,0,rootId,null);
         rl.addView(root);
 
         setContentView(rl);
        
     }
+    
+    public boolean isChoosable() {
+		return choosable;
+	}
     
     public void objectSelected() {
     	getMenuInflater().inflate(R.menu.galaxy, menu);
@@ -48,6 +55,7 @@ public class Galaxy extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
        this.menu=menu;
+       
         return true;
     }
 

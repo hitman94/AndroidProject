@@ -13,7 +13,7 @@ import android.graphics.Rect;
 import android.view.View;
 
 import com.example.androidproject.activities.Galaxy;
-import com.example.androidproject.database.AndodabContentProvider;
+import com.example.androidproject.activities.MainActivity;
 import com.example.projectandroid2015.util.ContentProviderUtil;
 
 public class ObjectView extends View {
@@ -32,7 +32,7 @@ public class ObjectView extends View {
 	public ObjectView(Context context,int level, String id,ObjectView ancester) {
 		
 		super(context);
-		this.utils = Galaxy.contentUtils;
+		this.utils = MainActivity.contentUtils;
 		paint = new Paint();
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.BLACK);
@@ -46,22 +46,25 @@ public class ObjectView extends View {
 		this.ancester=ancester;
 		setLongClickable(true);
 		setClickable(true);
-		setOnLongClickListener(new OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				if( v.equals(((CustomLayout)getParent()).getSelectedObject())) {
-					paint.setColor(Color.BLACK);
-					invalidate();
-					((CustomLayout)getParent()).setSelectedObject(null);
-				}else {
-					paint.setColor(Color.GREEN);
-					invalidate();
-					((CustomLayout)getParent()).setSelectedObject(v);
+		if( ((Galaxy)context).isChoosable() ) {
+			setOnLongClickListener(new OnLongClickListener() {
+
+				@Override
+				public boolean onLongClick(View v) {
+					if (v.equals(((CustomLayout) getParent())
+							.getSelectedObject())) {
+						paint.setColor(Color.BLACK);
+						invalidate();
+						((CustomLayout) getParent()).setSelectedObject(null);
+					} else {
+						paint.setColor(Color.GREEN);
+						invalidate();
+						((CustomLayout) getParent()).setSelectedObject(v);
+					}
+					return true;
 				}
-				return true;
-			}
-		});
+			});
+		}
 		setOnClickListener(new OnClickListener() {
 			
 			@Override
