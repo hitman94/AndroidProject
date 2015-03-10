@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
     	startActivity(i);
     }
     
-    public void createObject(View v) {
+    public void createNewObject(View v) {
     	
     }
     
