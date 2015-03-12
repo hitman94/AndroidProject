@@ -19,5 +19,7 @@
     <string name="new_property_title">New property</string>
     <string name="toastValueField">the Value field must be filled</string>
     <string name="toastNameField">the Name field must be filled</string>
+    <string name="toast_property_already_defined">Property already defined</string>
+    <string name="edit_property_dialog_title">Edit property</string>
 
 </resources>
