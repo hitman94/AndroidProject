@@ -8,9 +8,48 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.androidproject.MainActivity" >
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignTop="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/bdd" />
+
     <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Andodab"
+         />
+
+    <Button
+        android:id="@+id/viewBase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Visualiser la base"
+        android:onClick="viewBase" />
+
+    <Button
+        android:id="@+id/createObject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/viewBase"
+        android:layout_below="@+id/viewBase"
+        android:text="Creer un nouvel objet"
+        android:onClick="createNewObject" />
+
+    <Button
+        android:id="@+id/sync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/createObject"
+        android:layout_below="@+id/createObject"
+        android:text="Synchronisation"
+        android:onClick="synchronize" />
 
 </RelativeLayout>

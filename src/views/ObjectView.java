@@ -1,5 +1,6 @@
 package views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,11 +13,14 @@ import android.graphics.Rect;
 import android.view.View;
 
 import com.example.androidproject.activities.Galaxy;
+import com.example.androidproject.activities.MainActivity;
 import com.example.projectandroid2015.util.ContentProviderUtil;
 
 public class ObjectView extends View {
 	
-	private Rect rectangle;
+	private Rect rectProperties;
+	private Rect rectName;
+	private Rect rectCanvas;
 	private Paint paint;
 	private int level;
 	private String objectId;
@@ -28,7 +32,7 @@ public class ObjectView extends View {
 	public ObjectView(Context context,int level, String id,ObjectView ancester) {
 		
 		super(context);
-		this.utils = ((Galaxy)context).contentUtils;
+		this.utils = MainActivity.contentUtils;
 		paint = new Paint();
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.BLACK);
@@ -36,26 +40,31 @@ public class ObjectView extends View {
 		this.objectId=id;
 		initProperties();
 		initLongestString();
-		rectangle = new Rect();	
+		rectProperties = new Rect();
+		rectName = new Rect();
+		rectCanvas = new Rect();
 		this.ancester=ancester;
 		setLongClickable(true);
 		setClickable(true);
-		setOnLongClickListener(new OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				if( v.equals(((CustomLayout)getParent()).getSelectedObject())) {
-					paint.setColor(Color.BLACK);
-					invalidate();
-					((CustomLayout)getParent()).setSelectedObject(null);
-				}else {
-					paint.setColor(Color.GREEN);
-					invalidate();
-					((CustomLayout)getParent()).setSelectedObject(v);
+		if( ((Galaxy)context).isChoosable() ) {
+			setOnLongClickListener(new OnLongClickListener() {
+
+				@Override
+				public boolean onLongClick(View v) {
+					if (v.equals(((CustomLayout) getParent())
+							.getSelectedObject())) {
+						paint.setColor(Color.BLACK);
+						invalidate();
+						((CustomLayout) getParent()).setSelectedObject(null);
+					} else {
+						paint.setColor(Color.GREEN);
+						invalidate();
+						((CustomLayout) getParent()).setSelectedObject(v);
+					}
+					return true;
 				}
-				return true;
-			}
-		});
+			});
+		}
 		setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -64,8 +73,11 @@ public class ObjectView extends View {
 				((CustomLayout)getParent()).removeLevel(view.getLevel()+1);
 				
 				//TODO get child from BDD
-				
-				((CustomLayout)getParent()).addView(new ObjectView(getContext(), view.getLevel()+1, "1", view));
+				ArrayList<String> list = utils.getChildren(objectId);
+				if(list==null)
+					return;
+				for(String id : list)
+					((CustomLayout)getParent()).addView(new ObjectView(getContext(), view.getLevel()+1, id, view));
 			}
 		});
 	}
@@ -76,10 +88,16 @@ public class ObjectView extends View {
 	}
 	
 	private void initProperties() {
-		//TODO recup�rer depuis la BDD
+		//TODO recup�rer depuis la BDD
 		properties=new HashMap<String, String>();
-		properties.put("hello", "blabla");
-		properties.put("test", "123");
+		if(!objectId.equals("root")) {
+			HashMap<String, String> map = utils.getProperties(objectId);
+			if (map != null) {
+				for (Map.Entry<String, String> entry : map.entrySet())
+					properties.put(entry.getKey(), entry.getValue());
+			}
+		}
+		//properties.put("hello", "123");
 	}
 	
 	
@@ -91,26 +109,37 @@ public class ObjectView extends View {
 				longestString=l;
 			}
 		}
+		if(objectId.length()>longestString)
+			longestString=objectId.length();
 	}
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		int width = longestString * 7;
-		int height = properties.size() * 20;
+		int width = longestString * 8;
+		int height = properties.size() * 20 + 20; //Propriétés + nom objet
 		setMeasuredDimension(width, height);
 	}
 	
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		rectangle.left=0;
-		rectangle.top=0;
-		rectangle.bottom=getMeasuredHeight();
-		rectangle.right=getMeasuredWidth();
-		canvas.drawRect(rectangle, paint);
-		yToDraw=15;
+//		float scale = ((CustomLayout)getParent()).getScaleFactor();
+//		canvas.scale(scale, scale);
+		canvas.getClipBounds(rectCanvas);
+		rectName.left=1;
+		rectName.top=1;
+		rectName.bottom=20;
+		rectName.right=rectCanvas.right-1;
+		rectProperties.left=1;
+		rectProperties.top=20;
+		rectProperties.bottom=rectCanvas.bottom-1;
+		rectProperties.right=rectCanvas.right-1;
+		canvas.drawRect(rectProperties, paint);
+		canvas.drawRect(rectName, paint);
+		canvas.drawText(objectId, 5, 15, paint);
+		yToDraw=35;
 		for(Map.Entry<String,String> entry : properties.entrySet()) {
-			canvas.drawText(entry.getKey()+"="+entry.getValue(), 10, yToDraw, paint);
+			canvas.drawText(entry.getKey()+"="+entry.getValue(), 5, yToDraw, paint);
 			yToDraw+=15;
 		}		
 	}

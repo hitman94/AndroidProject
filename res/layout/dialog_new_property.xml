@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <EditText
+            android:id="@+id/propName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/property_name"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/button_dialog"/>
+
+    <EditText
+            android:id="@+id/propValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:hint="@string/property_value"
+            android:layout_below="@+id/propName"
+            android:layout_alignLeft="@+id/propName"
+            android:layout_alignStart="@+id/propName"
+            android:layout_toLeftOf="@+id/button_dialog"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Value"
+            android:id="@+id/button_dialog"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignBottom="@+id/propValue"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/propName"/>
+
+</RelativeLayout>

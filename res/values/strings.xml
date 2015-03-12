@@ -1,5 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">AndroidProject</string>
+    <string name="title_activity_rea">Rea</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_createObjectAct">Creation of a new Object</string>
+    <string name="objectName">Object name</string>
+    <string name="hint_name">Object name</string>
+    <string name="preInherits">Inherits of : </string>
+    <string name="listviewInfo">Object propreties</string>
+    <string name="objname">Object Name : </string>
+    <string name="property_search_hint">Property name</string>
+    <string name="search_hint">Search or Create Property</string>
+    <string name="newProperty">New Property</string>
+    <string name="property_name">Property Name</string>
+    <string name="property_value">Property Value</string>
+    <string name="new_property_title">New property</string>
+    <string name="toastValueField">the Value field must be filled</string>
+    <string name="toastNameField">the Name field must be filled</string>
+    <string name="toast_property_already_defined">Property already defined</string>
+    <string name="edit_property_dialog_title">Edit property</string>
+    <string name="title_activity_synchronizer">Synchronizer</string>
 
 </resources>

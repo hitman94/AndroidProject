@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        >
+
+    <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/objName"
+            android:layout_marginTop="34dp"
+            android:inputType="text"
+            android:autoText="false"
+            android:selectAllOnFocus="true"
+            android:hint="@string/hint_name"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/textView2"
+            android:layout_toStartOf="@id/textView2"
+            android:layout_alignEnd="@+id/button"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/preInherits"
+            android:id="@+id/preInheritObj"
+            android:layout_below="@+id/objName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/InheritsName"
+            android:layout_alignTop="@+id/preInheritObj"
+            android:layout_toRightOf="@+id/preInheritObj"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/listviewInfo"
+            android:id="@+id/infoListView"
+            android:layout_below="@+id/InheritsName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="26dp"/>
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:layout_below="@+id/infoListView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            tools:listitem="@android:layout/simple_list_item_1"
+            tools:listfooter="@android:layout/simple_selectable_list_item"
+            tools:listheader="@android:layout/two_line_list_item"
+            />
+
+    <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button"
+            android:background="@drawable/addbutton"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="goToSelectParentProperty"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/objname"
+            android:id="@+id/textView2"
+            android:layout_alignBottom="@+id/objName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+</RelativeLayout>

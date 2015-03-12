@@ -11,27 +11,36 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
-import com.example.projectandroid2015.util.ContentProviderUtil;
 
 public class Galaxy extends Activity {
 
 	private Menu menu;
 	private CustomLayout rl;
-	public static ContentProviderUtil contentUtils;
+	private boolean choosable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent i = getIntent();
+        choosable = i.getBooleanExtra("allowChoose", true);
+        
+        String rootId = i.getStringExtra("rootId");
+        if(rootId==null)
+        	rootId = new String("root");
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);
-        ObjectView root=new ObjectView(this,0,"1",null);
+        
+        ObjectView root=new ObjectView(this,0,rootId,null);
         rl.addView(root);
-        rl.addView(new ObjectView(this,1,"2",root));
-        rl.addView(new ObjectView(this,1,"3",root));
+
         setContentView(rl);
        
     }
+    
+    public boolean isChoosable() {
+		return choosable;
+	}
     
     public void objectSelected() {
     	getMenuInflater().inflate(R.menu.galaxy, menu);
@@ -45,6 +54,7 @@ public class Galaxy extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
        this.menu=menu;
+       
         return true;
     }
 
@@ -62,6 +72,10 @@ public class Galaxy extends Activity {
         	finish();
         	
             return true;
+        }
+        else if(id==android.R.id.home) {
+        	finish();
+        	return true;
         }
         return super.onOptionsItemSelected(item);
     }

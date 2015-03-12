@@ -2,6 +2,7 @@ package com.example.projectandroid2015.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentValues;
