@@ -411,6 +411,37 @@ public class AndodabContentProvider extends ContentProvider {
 							+ ")", selectionArgs);
 			break;
 
+		case OBJECTENTRY:
+			// Delete all the records of the table
+			count = database.delete(ObjectEntryTable.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+
+		case OBJECTENTRY_ID:
+			count = database.delete(ObjectEntryTable.TABLE_NAME,
+
+			ObjectEntryTable.COLUMN_ID
+					+ " = "
+					+ uri.getLastPathSegment()
+					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection
+							+ ')' : ""), selectionArgs);
+			
+		case PRIMITIVEENTRY:
+			// Delete all the records of the table
+			count = database.delete(PrimitiveEntryTable.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+
+		case PRIMITIVEENTRY_ID:
+			count = database.delete(PrimitiveEntryTable.TABLE_NAME,
+
+			PrimitiveEntryTable.COLUMN_ID
+					+ " = "
+					+ uri.getLastPathSegment()
+					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection
+							+ ')' : ""), selectionArgs);
+			break;
+
 		case DICOOBJ:
 			count = database.delete(DicoObjectTable.TABLE_NAME, selection,
 					selectionArgs);

@@ -1,5 +1,6 @@
 package com.example.projectandroid2015.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
@@ -147,7 +147,7 @@ public class ContentProviderUtil extends Activity {
 		values.put(PrimitiveObjectTable.ANCESTOR, "String");
 		getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-		
+
 		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Banane");
 		getContentResolver().insert(
@@ -505,6 +505,26 @@ public class ContentProviderUtil extends Activity {
 		}
 	}
 
+	// TODO
+	public ArrayList<String> getChildren(String objectID) {
+		String URL = "content://com.example.andodab.provider.Andodab/dicoobject";
+		Uri roots = Uri.parse(URL);
+		ArrayList<String> children = new ArrayList<String>();
+		Cursor c = getContentResolver().query(roots, null,
+				"ancestor = '" + objectID + "'", null, "_id");
+		if (!c.moveToFirst()) {
+			return null;
+		} else {
+			do {
+				children.add(c.getString(c
+						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
+
+			} while (c.moveToNext());
+		}
+
+		return children;
+	}
+
 	// TODO Méthode avec hashmap pour les électriciens
 	public HashMap<String, String> getProperties(String objectID) {
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -566,11 +586,109 @@ public class ContentProviderUtil extends Activity {
 		}
 	}
 
-	public void deleteRoot(View view) {
-		
-	}
+	public void updateID(String type, String id_e, String new_id) {
+		String URL = "content://com.example.andodab.provider.Andodab/entry";
+		Uri entry = Uri.parse(URL);
 
-	public void updateRoot(View view) {
-		
+		/* Request to get the fields of the entry chosen */
+		Cursor c = getContentResolver().query(entry, null,
+				"_id = '" + id_e + "'", null, "_id");
+
+		/* Parcours */
+		if (!c.moveToFirst()) {
+			return;
+		} else {
+			Cursor insert;
+			ContentValues values = new ContentValues();
+
+			// If the type of the new value is the same as the type of the entry
+			// already existing
+			if (c.getString(c.getColumnIndex(EntryTable.ENTRYTYPE))
+					.toUpperCase().equals(type.toUpperCase())) {
+				// If the current type of the entry is Object
+				if (c.getString(c.getColumnIndex(EntryTable.ENTRYTYPE))
+						.toUpperCase().equals("OBJECT")) {
+					values.put(ObjectEntryTable.VALUE, new_id);
+
+					getContentResolver()
+							.update(Uri
+									.parse("content://com.example.andodab.provider.Andodab/objectentry"),
+									values,
+									"_id = "
+											+ c.getString(c
+													.getColumnIndex(EntryTable.COLUMN_ID)),
+									null);
+					return;
+
+				} else { // If the current type of the entry is Primitive
+					values.put(PrimitiveEntryTable.VALUE, new_id);
+					getContentResolver()
+							.update(Uri
+									.parse("content://com.example.andodab.provider.Andodab/primitiveentry"),
+									values,
+									"_id = "
+											+ c.getString(c
+													.getColumnIndex(EntryTable.COLUMN_ID)),
+									null);
+					return;
+				}
+			}
+			// If the type of the new value is different from the type of the
+			// current entry, we delete, update and insert
+			else {
+				// If the type of the current entry is Object
+				if (c.getString(c.getColumnIndex(EntryTable.ENTRYTYPE))
+						.toUpperCase().equals("OBJECT")) {
+					// Deleting the old entryvalue in objectentry
+					getContentResolver()
+							.delete(Uri
+									.parse("content://com.example.andodab.provider.Andodab/objectentry"),
+									"_id='" + id_e + "'", null);
+
+					// Updating the type of the entry in Entry
+					values.put(EntryTable.ENTRYTYPE, type);
+					getContentResolver()
+							.update(Uri
+									.parse("content://com.example.andodab.provider.Andodab/entry"),
+									null, "_id='" + id_e + "'", null);
+
+					values.clear();
+
+					// Inserting the new entryvalue in primitiveentry
+					values.put(PrimitiveEntryTable.COLUMN_ID, id_e);
+					values.put(PrimitiveEntryTable.VALUE, new_id);
+					getContentResolver()
+							.insert(Uri
+									.parse("content://com.example.andodab.provider.Andodab/primitiveentry"),
+									values);
+					return;
+
+				} else { // If the type of the current entry is primitive
+					// Deleting the old value in PrimitiveEntry
+					getContentResolver()
+							.delete(Uri
+									.parse("content://com.example.andodab.provider.Andodab/primitiveentry"),
+									"_id='" + id_e + "'", null);
+
+					// Updating the type in Entry
+					values.put(EntryTable.ENTRYTYPE, type);
+					getContentResolver()
+							.update(Uri
+									.parse("content://com.example.andodab.provider.Andodab/entry"),
+									null, "_id='" + id_e + "'", null);
+
+					values.clear();
+
+					// Inserting the new entryvalue in objectentry
+					values.put(ObjectEntryTable.COLUMN_ID, id_e);
+					values.put(ObjectEntryTable.VALUE, new_id);
+					getContentResolver()
+							.insert(Uri
+									.parse("content://com.example.andodab.provider.Andodab/objectentry"),
+									values);
+					return;
+				}
+			}
+		}
 	}
 }
