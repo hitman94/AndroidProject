@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         if(!bddCreated) {
         	contentUtils= new ContentProviderUtil(this);
-        	contentUtils.addElement(null);
+        //	contentUtils.addElement(null);
         	bddCreated=true;
         }
     }
@@ -37,7 +37,8 @@ public class MainActivity extends Activity {
     }
     
     public void synchronize(View v){
-    	
+    	Intent i = new Intent(this, Synchronizer.class);
+    	startActivity(i);
     }
 
 

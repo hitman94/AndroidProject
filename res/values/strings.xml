@@ -19,5 +19,6 @@
     <string name="new_property_title">New property</string>
     <string name="toastValueField">the Value field must be filled</string>
     <string name="toastNameField">the Name field must be filled</string>
+    <string name="title_activity_synchronizer">Synchronizer</string>
 
 </resources>

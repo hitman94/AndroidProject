@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
-import com.example.projectandroid2015.util.ContentProviderUtil;
 
 public class Galaxy extends Activity {
 
@@ -21,7 +20,7 @@ public class Galaxy extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent i = getIntent();
         choosable = i.getBooleanExtra("allowChoose", true);
         
@@ -73,6 +72,10 @@ public class Galaxy extends Activity {
         	finish();
         	
             return true;
+        }
+        else if(id==android.R.id.home) {
+        	finish();
+        	return true;
         }
         return super.onOptionsItemSelected(item);
     }
