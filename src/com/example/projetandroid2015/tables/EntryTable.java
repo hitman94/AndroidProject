@@ -12,7 +12,7 @@ public class EntryTable {
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME
-			+ "(" + COLUMN_ID + " INTEGER NOT NULL, " + NAME
+			+ "(" + COLUMN_ID + " LONG NOT NULL, " + NAME
 			+ " VARCHAR(50) NOT NULL, " + ENTRYTYPE
 			+ " VARCHAR(50), PRIMARY KEY ("
 			+ COLUMN_ID + "));";

@@ -1,14 +1,11 @@
 package com.example.androidproject.activities;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,12 +13,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.androidproject.R;
 import com.example.androidproject.adapters.PropertiesAdaptaters;
 import com.example.projectandroid2015.util.ContentProviderUtil;
-import views.ObjectView;
 
 /**
  * Created by Florian on 04/03/2015.
