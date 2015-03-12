@@ -16,12 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
+import com.example.androidproject.synchronisation.AndodabClient;
 
 public class Synchronizer extends Activity {
 
@@ -69,7 +71,7 @@ public class Synchronizer extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_synchronizer);
-		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
 		discoveredDevice = new ArrayList<BluetoothDevice>();
 		
 		
@@ -79,18 +81,41 @@ public class Synchronizer extends Activity {
 		listDevice.setAdapter(deviceListAdapter);
 		
 		
+		listDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				AndodabClient client = new AndodabClient(discoveredDevice.get(position),getApplicationContext());
+				client.start();
+				
+			}
+		});
 		
-		
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(bluetoothAdapter == null) {
 			Toast.makeText(this, "Votre appareil n'a pas de bluetooth", Toast.LENGTH_SHORT).show();
 			finish();
 		}
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		if (!bluetoothAdapter.isEnabled()) {
 			   Intent enableBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			   startActivityForResult(enableBlueTooth, REQUEST_BLUETOOTH_ACTIVATION);
 		} else {
 			startDiscovering();
+			
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		bluetoothAdapter.cancelDiscovery();
 	}
 	
 	private void startDiscovering() {
@@ -119,10 +144,9 @@ public class Synchronizer extends Activity {
 	
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		unregisterReceiver(bluetoothReceiver);
-		bluetoothAdapter.cancelDiscovery();
+		
 	}
 	
 	@Override

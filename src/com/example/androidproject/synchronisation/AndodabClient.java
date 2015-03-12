@@ -1,10 +1,12 @@
 package com.example.androidproject.synchronisation;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-
-import java.io.IOException;
+import android.content.Context;
 
 /**
  * Created by Florian on 12/03/2015.
@@ -12,16 +14,16 @@ import java.io.IOException;
 public class AndodabClient extends Thread{
     private final BluetoothSocket socket;
     private final BluetoothDevice device;
+    private final Context context;
 
-
-    public AndodabClient(BluetoothDevice device) {
+    public AndodabClient(BluetoothDevice device,Context context) {
 
         BluetoothSocket tmp = null;
         this.device = device;
-
+        this.context=context;
         try {
             // MY_UUID is the app's UUID string, also used by the server code
-            tmp = device.createRfcommSocketToServiceRecord(java.util.UUID.fromString("AndodabProjectM2android"));
+            tmp = device.createRfcommSocketToServiceRecord(java.util.UUID.fromString("83818610-c8bf-11e4-8830-0800200c9a66"));
         } catch (IOException e) { }
         socket = tmp;
     }
@@ -33,13 +35,18 @@ public class AndodabClient extends Thread{
         try {
             socket.connect();
         } catch (IOException connectException) {
-            try {
-                socket.close();
-            } catch (IOException closeException) { }
+            cancel();
+            //Toast.makeText(context, "Impossible d'etablir la connexion", Toast.LENGTH_SHORT).show();
+            System.err.println("connexion invalide");
             return;
         }
 
-        launchSynchronizeThread(socket);
+        try {
+			launchSynchronizeThread(socket);
+		} catch (IOException e) {
+			System.err.println("erreur lors de lenvoie de données");
+			return;
+		}
     }
 
     /** Will cancel an in-progress connection, and close the socket */
@@ -51,7 +58,13 @@ public class AndodabClient extends Thread{
 
 
 
-    public void launchSynchronizeThread(BluetoothSocket socket){
-        //TODO launch
+    public void launchSynchronizeThread(BluetoothSocket socket) throws IOException{
+    	ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+    	
+    	Long synchroDate = System.currentTimeMillis();
+    	
+    	out.writeObject(synchroDate);
+    	System.err.println("connexion OK");
+        return;
     }
 }

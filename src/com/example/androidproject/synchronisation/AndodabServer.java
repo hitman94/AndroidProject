@@ -17,7 +17,7 @@ public class AndodabServer extends Thread {
         BluetoothServerSocket tmp = null;
         try {
             // MY_UUID is the app's UUID string, also used by the client code
-            tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Andodab",java.util.UUID.fromString("AndodabProjectM2android"));
+            tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Andodab",java.util.UUID.fromString("83818610-c8bf-11e4-8830-0800200c9a66"));
         } catch (IOException e) { }
         ServerSocket = tmp;
     }
@@ -30,15 +30,19 @@ public class AndodabServer extends Thread {
             } catch (IOException e) {
                 break;
             }
+            
+            launchSynchronizeThread(socket);
+            
             if (socket != null) {
-                launchSynchronizeThread(socket);
+               
                 try {
                     ServerSocket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                   return;
                 }
-                break;
+               
             }
+            break;
         }
     }
 
@@ -50,6 +54,7 @@ public class AndodabServer extends Thread {
     }
 
     public void launchSynchronizeThread(BluetoothSocket socket){
-        //TODO launch
+       System.err.println("Connexion serveur OK");
+       return;
     }
 }
