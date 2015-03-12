@@ -174,6 +174,11 @@ public class ContentProviderUtil  {
 		values.put(EntryTable.NAME, "energyDensity");
 		values.put(EntryTable.ENTRYTYPE, "Primitive");
 		values.put(ObjectEntryTable.VALUE, "100.0");
+
+        values.put(EntryTable.COLUMN_ID, "5");
+        values.put(EntryTable.NAME, "name");
+        values.put(EntryTable.ENTRYTYPE, "Object");
+        values.put(ObjectEntryTable.VALUE, "String");
 		context.getContentResolver().insert(AndodabContentProvider.CONTENT_URI_ENTRY,
 				values);
 
@@ -194,20 +199,22 @@ public class ContentProviderUtil  {
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
-		values.put(DicObjectEntryTable.COLUMN_ID, "3");
+
+        values.put(DicObjectEntryTable.COLUMN_ID, "5");
+        values.put(DicObjectEntryTable.COLUMN_ID2, "Animal");
+        context.getContentResolver().insert(
+                AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
+
+		values.put(DicObjectEntryTable.COLUMN_ID, "4");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Eucalyptus");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
-		values.put(DicObjectEntryTable.COLUMN_ID, "4");
+		values.put(DicObjectEntryTable.COLUMN_ID, "3");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Koala");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
-		values.put(DicObjectEntryTable.COLUMN_ID, "2");
-		values.put(DicObjectEntryTable.COLUMN_ID2, "Koala");
-		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.put(DicObjectEntryTable.COLUMN_ID, "2");
 		values.put(DicObjectEntryTable.COLUMN_ID2, "Mammal");

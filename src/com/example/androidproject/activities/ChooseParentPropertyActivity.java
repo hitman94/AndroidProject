@@ -20,7 +20,6 @@ import android.widget.*;
 
 import com.example.androidproject.R;
 import com.example.androidproject.adapters.PropertiesAdaptaters;
-import com.example.androidproject.adapters.PropertiesAdaptaters;
 import com.example.projectandroid2015.util.ContentProviderUtil;
 import views.ObjectView;
 
@@ -33,13 +32,15 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
     private PropertiesAdaptaters adaptaters;
     private Context mContext;
     private AlertDialog dial;
+    private ContentProviderUtil util;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        ContentProviderUtil util = new ContentProviderUtil(this);
+        util = new ContentProviderUtil(this);
         Intent i =   getIntent();
         String idObjet = i.getStringExtra("id");
+        properties = new ArrayList<Map.Entry<String, String>>();
         if(idObjet!=null){
             for( Map.Entry<String,String> entry : util.getParentProperties(idObjet).entrySet()){
                 properties.add(entry);
@@ -48,8 +49,8 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
         setContentView(R.layout.choose_parent_property);
         //TODO init le content resolver
         //TODO load les properties depuis le content, tmp des ajout à la main
-        properties = new ArrayList<Map.Entry<String, String>>();
-        properties.add(new AbstractMap.SimpleEntry<String, String>("test","value"));
+
+   /*     properties.add(new AbstractMap.SimpleEntry<String, String>("test","value"));
         properties.add(new AbstractMap.SimpleEntry<String, String>("type","value"));
         properties.add(new AbstractMap.SimpleEntry<String, String>("food","value"));
         properties.add(new AbstractMap.SimpleEntry<String, String>("Frite","value"));
@@ -60,7 +61,8 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
         properties.add(new AbstractMap.SimpleEntry<String, String>("food","value"));
         properties.add(new AbstractMap.SimpleEntry<String, String>("Frite","value"));
         properties.add(new AbstractMap.SimpleEntry<String, String>("Bogosssssssssssss","value"));
-        properties.add(new AbstractMap.SimpleEntry<String, String>("Race","value"));
+        properties.add(new AbstractMap.SimpleEntry<String, String>("Race","value")); */
+
         ListView lv = (ListView) findViewById(R.id.listproperties);
         adaptaters = new PropertiesAdaptaters(this,properties);
         lv.setAdapter(adaptaters);

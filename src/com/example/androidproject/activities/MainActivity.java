@@ -33,7 +33,9 @@ public class MainActivity extends Activity {
     }
     
     public void createNewObject(View v) {
-    	
+    	Intent i = new Intent(this,EditObjectActivity.class);
+        i.putExtra("idObjet","Koala");
+        startActivity(i);
     }
     
     public void synchronize(View v){
