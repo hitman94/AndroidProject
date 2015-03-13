@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.androidproject.R;
+import com.example.projectandroid2015.util.ContentProviderUtil;
 
 public class Galaxy extends Activity {
 
@@ -26,7 +27,7 @@ public class Galaxy extends Activity {
         
         String rootId = i.getStringExtra("rootId");
         if(rootId==null)
-        	rootId = new String("root");
+        	rootId = new String(ContentProviderUtil.idroot);
         
         rl = new CustomLayout(this);
         rl.setBackgroundColor(Color.GRAY);

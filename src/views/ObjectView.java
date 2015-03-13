@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -88,16 +89,21 @@ public class ObjectView extends View {
 	}
 	
 	private void initProperties() {
-		//TODO recup�rer depuis la BDD
 		properties=new HashMap<String, String>();
-		if(!objectId.equals("root")) {
+		if(!objectId.equals(ContentProviderUtil.idroot)) {
 			HashMap<String, String> map = utils.getProperties(objectId);
 			if (map != null) {
-				for (Map.Entry<String, String> entry : map.entrySet())
-					properties.put(entry.getKey(), entry.getValue());
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					try {
+						properties.put(entry.getKey(), utils.getName(entry.getValue()));
+					}
+					catch (CursorIndexOutOfBoundsException e) {
+						properties.put(entry.getKey(), entry.getValue());
+					}
+				}
+					
 			}
 		}
-		//properties.put("hello", "123");
 	}
 	
 	
@@ -105,12 +111,13 @@ public class ObjectView extends View {
 	private void initLongestString() {
 		int l;
 		for(Map.Entry<String,String> entry : properties.entrySet()) {
+
 			if( (l=(entry.getKey().length()+entry.getValue().length()+1))>longestString) {
 				longestString=l;
 			}
 		}
-		if(objectId.length()>longestString)
-			longestString=objectId.length();
+		if(utils.getName(objectId).length()>longestString)
+			longestString=utils.getName(objectId).length();
 	}
 	
 	@Override
@@ -136,10 +143,11 @@ public class ObjectView extends View {
 		rectProperties.right=rectCanvas.right-1;
 		canvas.drawRect(rectProperties, paint);
 		canvas.drawRect(rectName, paint);
-		canvas.drawText(objectId, 5, 15, paint);
+		
+		canvas.drawText(utils.getName(objectId), 5, 15, paint);
 		yToDraw=35;
 		for(Map.Entry<String,String> entry : properties.entrySet()) {
-			canvas.drawText(entry.getKey()+"="+entry.getValue(), 5, yToDraw, paint);
+				canvas.drawText(entry.getKey()+"="+entry.getValue(), 5, yToDraw, paint);
 			yToDraw+=15;
 		}		
 	}

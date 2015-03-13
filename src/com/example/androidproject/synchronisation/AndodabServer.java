@@ -3,18 +3,24 @@ package com.example.androidproject.synchronisation;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 
 /**
  * Created by Florian on 12/03/2015.
  */
 public class AndodabServer extends Thread {
     private final BluetoothServerSocket ServerSocket;
-
-    public AndodabServer() {
+    private final Context context;
+    public AndodabServer(Context context) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothServerSocket tmp = null;
+        this.context=context;
         try {
             // MY_UUID is the app's UUID string, also used by the client code
             tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Andodab",java.util.UUID.fromString("83818610-c8bf-11e4-8830-0800200c9a66"));
@@ -31,7 +37,15 @@ public class AndodabServer extends Thread {
                 break;
             }
             
-            launchSynchronizeThread(socket);
+            try {
+				launchSynchronizeThread(socket);
+			} catch (StreamCorruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             
             if (socket != null) {
                
@@ -53,8 +67,15 @@ public class AndodabServer extends Thread {
         } catch (IOException e) { }
     }
 
-    public void launchSynchronizeThread(BluetoothSocket socket){
-       System.err.println("Connexion serveur OK");
-       return;
+    public void launchSynchronizeThread(BluetoothSocket socket) throws StreamCorruptedException, IOException{
+		ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+		Long synchroDate = in.readLong();
+
+		SharedPreferences pref = context.getSharedPreferences(
+				"andodabSyncDevices", Context.MODE_PRIVATE);
+		Editor editor = pref.edit();
+		editor.putLong(socket.getRemoteDevice().getAddress(), synchroDate);
+		editor.commit();
+		return;
     }
 }

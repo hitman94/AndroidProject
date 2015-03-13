@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 /**
  * Created by Florian on 12/03/2015.
@@ -65,6 +67,12 @@ public class AndodabClient extends Thread{
     	
     	out.writeObject(synchroDate);
     	System.err.println("connexion OK");
+    	
+    	SharedPreferences pref = context.getSharedPreferences("andodabSyncDevices", Context.MODE_PRIVATE);
+    	Editor editor = pref.edit();
+    	editor.putLong(socket.getRemoteDevice().getAddress(), synchroDate);
+    	editor.commit();
+    	
         return;
     }
 }

@@ -14,7 +14,7 @@ public class BluetoothActivationReceiver extends BroadcastReceiver{
 	public void onReceive(Context context, Intent intent) {
 		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 		if(adapter.isEnabled()) {
-			server = new AndodabServer();
+			server = new AndodabServer(context);
 			Toast.makeText(context, "Waiting for connexion", Toast.LENGTH_SHORT).show();
 			server.start();			
 		}			
