@@ -4,7 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -239,6 +242,52 @@ public class ContentProviderUtil {
 
 		Toast.makeText(context, "Andodab : DicoObjectEntry inserted!",
 				Toast.LENGTH_LONG).show();
+	}
+
+	public String addProperty(String objectId, String name, String type,
+			String value) {
+
+		ContentValues values = new ContentValues();
+
+		values.put(EntryTable.NAME, name);
+		values.put(EntryTable.ENTRYTYPE, type);
+
+		if (type.equalsIgnoreCase("Object"))
+			values.put(ObjectEntryTable.VALUE, value);
+
+		else
+			values.put(PrimitiveEntryTable.VALUE, value);
+
+		context.getContentResolver().insert(
+				AndodabContentProvider.CONTENT_URI_ENTRY, values);
+
+		String propertyID = values.get(EntryTable.COLUMN_ID).toString();
+
+		values.clear();
+
+		values.put(DicObjectEntryTable.COLUMN_ID, getEntryID(name, value));
+		values.put(DicObjectEntryTable.COLUMN_ID2, value);
+
+		context.getContentResolver().insert(
+				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
+
+		return propertyID;
+
+	}
+
+	public List<HashMap<String, String>> getAllObjects() {
+		List<HashMap<String, String>> toReturn = new ArrayList<HashMap<String, String>>();
+		Queue<String> queue = new LinkedBlockingQueue<String>();
+		
+		queue.offer(idroot);
+		String current;
+		while ((current = queue.poll()) != null) {
+			for (String child : getChildren(current)) {
+				toReturn.add(getObject(child));
+				queue.offer(child);
+			}
+		}
+		return toReturn;
 	}
 
 	public void showObject(View view) {
