@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -194,10 +196,56 @@ public class ContentProviderUtil {
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
 
-		Toast.makeText(context, "Andodab : Entry inserted!", Toast.LENGTH_LONG)
-				.show();
+	}
+	
+	public List<HashMap<String,String>> getAllObjects() {
+		List<HashMap<String,String>> toReturn = new ArrayList<HashMap<String,String>>();
+		LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
+		queue.offer(idroot);
+		String current;
+		while( (current=queue.poll()) != null ) {
+			if(getChildren(current) == null)
+				continue;
+			for(String child:getChildren(current))  {
+				toReturn.add(getObject(child));
+				queue.offer(child);
+			}			
+		}
+		
+		return toReturn;
 	}
 
+	public String addProperty(String objectId, String name, String type,
+			String value) {
+
+		ContentValues values = new ContentValues();
+
+		values.put(EntryTable.NAME, name);
+		values.put(EntryTable.ENTRYTYPE, type);
+
+		if (type.equalsIgnoreCase("Object"))
+			values.put(ObjectEntryTable.VALUE, value);
+
+		else
+			values.put(PrimitiveEntryTable.VALUE, value);
+
+		context.getContentResolver().insert(
+				AndodabContentProvider.CONTENT_URI_ENTRY, values);
+
+		String propertyID = values.get(EntryTable.COLUMN_ID).toString();
+
+		values.clear();
+
+		values.put(DicObjectEntryTable.COLUMN_ID, getEntryID(name, value));
+		values.put(DicObjectEntryTable.COLUMN_ID2, value);
+
+		context.getContentResolver().insert(
+				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
+
+		return propertyID;
+
+	}
+	
 	public void addDicoE(View view) {
 		ContentValues values = new ContentValues();
 
@@ -481,6 +529,22 @@ public class ContentProviderUtil {
 			} while (c.moveToNext());
 		}
 	}
+	
+	public void addObjet(HashMap<String,String> obj) {
+		ContentValues values = new ContentValues();
+        values.put(ObjectTable.COLUMN_ID,obj.get(ObjectTable.COLUMN_ID));
+        values.put(ObjectTable.NAME, obj.get(ObjectTable.NAME));
+        values.put(ObjectTable.OBJECT_TYPE, obj.get(ObjectTable.OBJECT_TYPE));
+        values.put(ObjectTable.TIMESTAMP, obj.get(ObjectTable.TIMESTAMP));
+        values.put(ObjectTable.ANCESTOR, obj.get(ObjectTable.ANCESTOR));
+        String sealed = obj.get(DicoObjectTable.SEALED);
+        if(sealed == null || sealed.equals("false"))
+          values.put(DicoObjectTable.SEALED, "false");
+        else
+            values.put(DicoObjectTable.SEALED, "true");
+        context.getContentResolver().insert(
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
+	}
 
 	// TODO Méthode pour récupérer un objet directement
 	public HashMap<String, String> getObject(String objectID) {
@@ -498,6 +562,10 @@ public class ContentProviderUtil {
 		} else {
 			data.put(ObjectTable.COLUMN_ID,
 					c.getString(c.getColumnIndex(ObjectTable.COLUMN_ID)));
+			data.put(ObjectTable.NAME,
+					c.getString(c.getColumnIndex(ObjectTable.NAME)));
+			data.put(ObjectTable.TIMESTAMP,
+					c.getString(c.getColumnIndex(ObjectTable.TIMESTAMP)));
 			data.put(ObjectTable.OBJECT_TYPE,
 					c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE)));
 			data.put(ObjectTable.ANCESTOR,

@@ -113,6 +113,7 @@ public class Synchronizer extends Activity {
 				
 			}
 		});
+		deviceListAdapter.notifyDataSetChanged();
 		
 		
 		
@@ -175,7 +176,6 @@ public class Synchronizer extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode==REQUEST_BLUETOOTH_ACTIVATION) {
 			if(resultCode==RESULT_OK) {
-				Toast.makeText(this, "Scanning for device", Toast.LENGTH_SHORT).show();
 				startDiscovering();
 				
 			}
