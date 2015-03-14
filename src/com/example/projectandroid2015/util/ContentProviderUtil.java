@@ -546,7 +546,29 @@ public class ContentProviderUtil {
                 AndodabContentProvider.CONTENT_URI_OBJECT, values);
 	}
 
-	// TODO Méthode pour récupérer un objet directement
+	// Get all the dicoobjects of the database with all their fields
+	public ArrayList<HashMap<String, String>> getDicoObjects() {
+		ArrayList<HashMap<String, String>> arrayList = new ArrayList<HashMap<String, String>>();
+
+		Cursor c = context.getContentResolver().query(
+				AndodabContentProvider.CONTENT_URI_DICOOBJ, null, null, null,
+				null);
+
+		if (!c.moveToFirst()) {
+			Log.e("SQL", "No DicoObjects yet");
+			return null;
+		} else {
+			do {
+				HashMap<String, String> hashMap = new HashMap<String, String>();
+				hashMap = getObject(c.getString(c
+						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
+				arrayList.add(hashMap);
+			} while (c.moveToNext());
+		}
+		return arrayList;
+	}
+
+	// Méthode pour récupérer un objet directement
 	public HashMap<String, String> getObject(String objectID) {
 		HashMap<String, String> data = new HashMap<String, String>();
 

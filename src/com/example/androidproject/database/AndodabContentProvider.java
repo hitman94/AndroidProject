@@ -17,7 +17,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.example.projectandroid2015.util.ContentProviderUtil;
 import com.example.projetandroid2015.tables.DicObjectEntryTable;
 import com.example.projetandroid2015.tables.DicoObjectTable;
 import com.example.projetandroid2015.tables.EntryTable;
@@ -28,9 +27,13 @@ import com.example.projetandroid2015.tables.PrimitiveEntryTable;
 import com.example.projetandroid2015.tables.PrimitiveObjectTable;
 
 public class AndodabContentProvider extends ContentProvider {
+	private static final String idroot = "999999999999999999";
+	private static final String idString = "888888888888888888";
+	private static final String idInteger = "777777777777777777";
+	private static final String idFloat = "666666666666666666";
 
 	// database declarations
-	AndodabDatabaseHelper dbHelper;
+	private AndodabDatabaseHelper dbHelper;
 	private SQLiteDatabase database;
 
 	// fields for the content provider
@@ -240,20 +243,33 @@ public class AndodabContentProvider extends ContentProvider {
 				String sealed = values.getAsString(DicoObjectTable.SEALED);
 				values.remove(DicoObjectTable.SEALED);
 
-				// ID random
+				// root
 				if (values.getAsString(ObjectTable.NAME).equals("root")) {
 					values.put(ObjectTable.COLUMN_ID,
-							ContentProviderUtil.idroot);
-				} else {
+							AndodabContentProvider.idroot);
+				} else if (values.getAsString(ObjectTable.NAME).toUpperCase()
+						.equals("STRING")) { // String
+					values.put(ObjectTable.COLUMN_ID,
+							AndodabContentProvider.idString);
+				} else if (values.getAsString(ObjectTable.NAME).toUpperCase()
+						.equals("FLOAT")) { // String
+					values.put(ObjectTable.COLUMN_ID,
+							AndodabContentProvider.idFloat);
+				} else if (values.getAsString(ObjectTable.NAME).toUpperCase()
+						.equals("INTEGER")) { // String
+					values.put(ObjectTable.COLUMN_ID,
+							AndodabContentProvider.idInteger);
+				} else { // random
+
 					Random random = new Random();
 					values.put(ObjectTable.COLUMN_ID, random.nextLong());
 
 					// meaning the ancestor is the root
 					if (values.get(ObjectTable.ANCESTOR) == null
 							&& !(values.getAsString(ObjectTable.NAME)
-									.equals(ContentProviderUtil.idroot))) {
+									.equals(AndodabContentProvider.idroot))) {
 						values.put(ObjectTable.ANCESTOR,
-								ContentProviderUtil.idroot);
+								AndodabContentProvider.idroot);
 					}
 				}
 
@@ -261,14 +277,13 @@ public class AndodabContentProvider extends ContentProvider {
 				values.put(ObjectTable.TIMESTAMP, new SimpleDateFormat(
 						"yyyy-MM-dd HH:mm:ss").format(new Date()));
 
-				
 				tmp = values.getAsString(ObjectTable.OBJECT_TYPE);
 				values.remove(ObjectTable.OBJECT_TYPE);
 				// insert an object type
 				if (tmp.toUpperCase().equals("OBJECT")) {
 					values.put(ObjectTable.OBJECT_TYPE, "Object");
 					id = database.insert(ObjectTable.TABLE_NAME, "", values);
-					
+
 					ContentValues val_object = new ContentValues();
 					val_object.put(DicoObjectTable.COLUMN_ID,
 							values.getAsString(ObjectTable.COLUMN_ID));
@@ -278,7 +293,7 @@ public class AndodabContentProvider extends ContentProvider {
 				} else if (tmp.toUpperCase().equals("PRIMITIVE")) {
 					values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 					id = database.insert(ObjectTable.TABLE_NAME, "", values);
-					
+
 					ContentValues val_object = new ContentValues();
 					val_object.put(ObjectPPrimitiveTable.COLUMN_ID,
 							values.getAsString(ObjectTable.COLUMN_ID));
@@ -324,16 +339,14 @@ public class AndodabContentProvider extends ContentProvider {
 					Long r = random.nextLong();
 					values.put(EntryTable.COLUMN_ID, r);
 					String type = values.getAsString(EntryTable.ENTRYTYPE);
-					
+
 					values.remove(EntryTable.ENTRYTYPE);
-					
-					
 
 					// insert an object type
 					if (type.toUpperCase().equals("OBJECT")) {
 						values.put(EntryTable.ENTRYTYPE, "Object");
 						id = database.insert(EntryTable.TABLE_NAME, "", values);
-						
+
 						ContentValues val_object = new ContentValues();
 						val_object.put(ObjectEntryTable.COLUMN_ID, r);
 						val_object.put(ObjectEntryTable.VALUE, value);
@@ -344,7 +357,7 @@ public class AndodabContentProvider extends ContentProvider {
 					} else if (type.toUpperCase().equals("PRIMITIVE")) {
 						values.put(EntryTable.ENTRYTYPE, "Primitive");
 						id = database.insert(EntryTable.TABLE_NAME, "", values);
-						
+
 						ContentValues val_object = new ContentValues();
 						val_object.put(PrimitiveEntryTable.COLUMN_ID, r);
 						val_object.put(PrimitiveEntryTable.VALUE, value);
@@ -386,7 +399,7 @@ public class AndodabContentProvider extends ContentProvider {
 			if (values.get(PrimitiveObjectTable.COLUMN_ID) != null) {
 				if (values.get(PrimitiveObjectTable.ANCESTOR) == null) {
 					values.put(PrimitiveObjectTable.ANCESTOR,
-							ContentProviderUtil.idroot);
+							AndodabContentProvider.idroot);
 				}
 				id = database.insert(PrimitiveObjectTable.TABLE_NAME, "",
 						values);
