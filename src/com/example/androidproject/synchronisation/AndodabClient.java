@@ -38,8 +38,8 @@ public class AndodabClient extends Thread{
             socket.connect();
         } catch (IOException connectException) {
             cancel();
-            //Toast.makeText(context, "Impossible d'etablir la connexion", Toast.LENGTH_SHORT).show();
             System.err.println("connexion invalide");
+            connectException.printStackTrace();
             return;
         }
 

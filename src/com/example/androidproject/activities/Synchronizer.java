@@ -1,7 +1,9 @@
 package com.example.androidproject.activities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -10,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,18 +41,23 @@ public class Synchronizer extends Activity {
 			String action = intent.getAction();
 			if(BluetoothDevice.ACTION_FOUND.equals(action)) {
 				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				discoveredDevice.add(device);
-				deviceListAdapter.notifyDataSetChanged();
+				if(!discoveredDevice.contains(device)) {
+					discoveredDevice.add(device);
+					deviceListAdapter.notifyDataSetChanged();
+				}
 			}
 			
 		}
 	};
 	
 	private class BluetoothDeviceAdapter<T> extends ArrayAdapter<T> {
+		
+		private final SharedPreferences pref;
 
 		public BluetoothDeviceAdapter(Context context, int resource,
 				List<T> objects) {
 			super(context, resource, objects);
+			pref = context.getSharedPreferences("andodabSyncDevices", Context.MODE_PRIVATE);
 		}
 		
 		
@@ -61,6 +69,11 @@ public class Synchronizer extends Activity {
 			View rowView = inflater.inflate(R.layout.bluetooth_item, parent,false);
 			TextView labelView = (TextView) rowView.findViewById(R.id.deviceName);
 			labelView.setText(discoveredDevice.get(position).getName());
+			Long syncDate;
+			if( (syncDate=pref.getLong(discoveredDevice.get(position).getAddress(), -1)) != -1 ) {
+				TextView textDate = (TextView) rowView.findViewById(R.id.syncDate);
+				textDate.setText("Derniere synchro: "+new Date(syncDate).toString());
+			}
 			return rowView;
 			
 		}
@@ -72,14 +85,23 @@ public class Synchronizer extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_synchronizer);
 		
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		if(bluetoothAdapter == null) {
+			Toast.makeText(this, "Votre appareil n'a pas de bluetooth", Toast.LENGTH_SHORT).show();
+			finish();
+		}
+		
 		discoveredDevice = new ArrayList<BluetoothDevice>();
 		
 		
 		deviceListAdapter = new BluetoothDeviceAdapter<BluetoothDevice>(this,R.layout.bluetooth_item, discoveredDevice);
+		Set<BluetoothDevice> set = bluetoothAdapter.getBondedDevices();
+		for(BluetoothDevice device : set)
+			discoveredDevice.add(device);
 		
 		ListView listDevice =  (ListView)findViewById(R.id.deviceList);
-		listDevice.setAdapter(deviceListAdapter);
-		
+		listDevice.setAdapter(deviceListAdapter);		
 		
 		listDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -92,11 +114,10 @@ public class Synchronizer extends Activity {
 			}
 		});
 		
-		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if(bluetoothAdapter == null) {
-			Toast.makeText(this, "Votre appareil n'a pas de bluetooth", Toast.LENGTH_SHORT).show();
-			finish();
-		}
+		
+		
+		
+		registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 		
 	}
 	
@@ -119,8 +140,8 @@ public class Synchronizer extends Activity {
 	}
 	
 	private void startDiscovering() {
-		registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 		bluetoothAdapter.startDiscovery();
+		
 	}
 
 	@Override
@@ -157,6 +178,9 @@ public class Synchronizer extends Activity {
 				Toast.makeText(this, "Scanning for device", Toast.LENGTH_SHORT).show();
 				startDiscovering();
 				
+			}
+			else {
+				finish();
 			}
 		}
 	}
