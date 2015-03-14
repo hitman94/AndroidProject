@@ -531,7 +531,29 @@ public class ContentProviderUtil {
 		}
 	}
 
-	// TODO Méthode pour récupérer un objet directement
+	// Get all the dicoobjects of the database with all their fields
+	public ArrayList<HashMap<String, String>> getDicoObjects() {
+		ArrayList<HashMap<String, String>> arrayList = new ArrayList<HashMap<String, String>>();
+
+		Cursor c = context.getContentResolver().query(
+				AndodabContentProvider.CONTENT_URI_DICOOBJ, null, null, null,
+				null);
+
+		if (!c.moveToFirst()) {
+			Log.e("SQL", "No DicoObjects yet");
+			return null;
+		} else {
+			do {
+				HashMap<String, String> hashMap = new HashMap<String, String>();
+				hashMap = getObject(c.getString(c
+						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
+				arrayList.add(hashMap);
+			} while (c.moveToNext());
+		}
+		return arrayList;
+	}
+
+	// Méthode pour récupérer un objet directement
 	public HashMap<String, String> getObject(String objectID) {
 		HashMap<String, String> data = new HashMap<String, String>();
 
@@ -588,7 +610,7 @@ public class ContentProviderUtil {
 		return children;
 	}
 
-	// TODO Méthode avec hashmap pour les électriciens
+	// Méthode avec hashmap
 	public HashMap<String, String> getProperties(String objectID) {
 		HashMap<String, String> properties = new HashMap<String, String>();
 
@@ -663,12 +685,8 @@ public class ContentProviderUtil {
 			request.moveToFirst();
 			String name = request.getString(request
 					.getColumnIndex(EntryTable.NAME));
-			// parcours de la table entry pour chercher une ligne avec le meme
-			// name
 			do {
 				if (name.equals(c.getString(c.getColumnIndex(EntryTable.NAME)))) {
-					// test pour definir le type et savoir dans quelle table
-					// chercher la valeur
 					if (c.getString(c.getColumnIndex(EntryTable.ENTRYTYPE))
 							.toUpperCase().equals("OBJECT")) {
 						request = context.getContentResolver().query(
@@ -713,7 +731,7 @@ public class ContentProviderUtil {
 		return true;
 	}
 
-	// TODO Update DOET
+	// Update DOET
 	public void updateID(String idObject, String type, String id_entry,
 			String new_value) {
 		try {
@@ -723,6 +741,7 @@ public class ContentProviderUtil {
 			if (!entryExist(id_entry, new_value)) {
 				return;
 			}
+
 			// Getting the right entry
 			Cursor c = context.getContentResolver().query(
 					AndodabContentProvider.CONTENT_URI_ENTRY, null,
@@ -780,7 +799,7 @@ public class ContentProviderUtil {
 				context.getContentResolver()
 						.insert(AndodabContentProvider.CONTENT_URI_DICOOBJENTRY,
 								values);
-			} else { // If there is only one object using context entry
+			} else { // If there is only one object using this entry
 				if (!c.moveToFirst()) {
 					return;
 				} else {
@@ -891,11 +910,10 @@ public class ContentProviderUtil {
 				"_id='" + id + "' and _iddo='" + iddo + "'", null);
 	}
 
-	// TODO Delete an object
+	// Delete an object
 	public void deleteObject(String object) {
 		// Deleting all the entries with the value "object" from the table entry
 		// & objectentry
-
 		Cursor c = context.getContentResolver().query(
 				AndodabContentProvider.CONTENT_URI_OBJECTENTRY, null,
 				ObjectEntryTable.VALUE + " = '" + object + "'", null, "_id");
