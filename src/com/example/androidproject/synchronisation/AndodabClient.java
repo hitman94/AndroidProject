@@ -14,11 +14,11 @@ import java.util.Set;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.SQLException;
 
 import com.example.androidproject.activities.MainActivity;
 import com.example.projetandroid2015.tables.EntryTable;
@@ -92,25 +92,25 @@ public class AndodabClient extends Thread{
     	in.readObject();
     	
     	if(pref.getLong(socket.getRemoteDevice().getAddress(), -1) == -1) { // 1ere synchro
-    		System.err.println("Envoi des objs cote client");
     		sendObjects(objs, out, in);
-    		System.err.println("Envoi des prop cote client");
     		sendProperties(objs, out, in);
-    		System.err.println("ajout des objs cote client");
     		List<HashMap<String, String>> receivedObj = receiveObjets(out, in);
-    		System.err.println("ajout des objs cote client");
     		HashMap<String,HashMap<String,String>> receivedProperties =receiveProperties(out, in);
     		
     		for(int i =0;i<receivedObj.size();i++) {
+    			try {
     	    	MainActivity.contentUtils.addObjet(receivedObj.get(i));
+    			} catch(SQLException e) {}
     		}
     		System.err.println("ajout des objs cote client");
     		for(Entry<String, HashMap<String, String>> entry : receivedProperties.entrySet()) {
-    			try {
-    				MainActivity.contentUtils.getName(entry.getValue().get(ObjectEntryTable.VALUE));
-    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Object", entry.getValue().get(ObjectEntryTable.VALUE));
-    			}catch(CursorIndexOutOfBoundsException e) {
-    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Primitive", entry.getValue().get(PrimitiveEntryTable.VALUE));
+    			for(Entry<String,String> propEnt:	entry.getValue().entrySet()) {    			
+	    			try {
+	    				MainActivity.contentUtils.getName(propEnt.getValue());
+	    				MainActivity.contentUtils.addObjectProperty(entry.getKey(), propEnt.getKey(), propEnt.getValue());
+	    			}catch(CursorIndexOutOfBoundsException e) {
+	    				MainActivity.contentUtils.addPrimitiveProperty(entry.getKey(), propEnt.getKey(), propEnt.getValue());
+	    			}
     			}
     		}
     		
@@ -146,6 +146,7 @@ public class AndodabClient extends Thread{
     }
     
     public static void sendProperties(List<HashMap<String,String>> objs,ObjectOutputStream out, ObjectInputStream in) throws IOException {
+    	System.err.println("prop");
     	HashMap<String, HashMap<String,String>> sendProperties = new HashMap<String, HashMap<String,String>>();
     	for(int i =0;i<objs.size();i++) {
 			HashMap<String, String> properties = MainActivity.contentUtils.getProperties(objs.get(i).get(ObjectTable.COLUMN_ID));
