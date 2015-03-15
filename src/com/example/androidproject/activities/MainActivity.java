@@ -3,6 +3,8 @@ package com.example.androidproject.activities;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,19 +20,20 @@ import com.example.projetandroid2015.tables.ObjectTable;
 import java.util.HashMap;
 import java.util.Random;
 
-
 public class MainActivity extends Activity {
 
 	public static ContentProviderUtil contentUtils;
-	private boolean bddCreated = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(!bddCreated) {
-        	contentUtils= new ContentProviderUtil(this);
-        	//contentUtils.addElement(null);
-        	bddCreated=true;
+        SharedPreferences pref = getSharedPreferences("andodabCreate", Context.MODE_PRIVATE);
+        contentUtils= new ContentProviderUtil(this);
+        if(pref.getInt("init", -1) == -1) {
+        	contentUtils.addElement(null);
+        	Editor edit=pref.edit();
+        	edit.putInt("init", 1);
+        	edit.commit();
         }
     }
     

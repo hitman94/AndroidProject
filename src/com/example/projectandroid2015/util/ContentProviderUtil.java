@@ -71,7 +71,7 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.NAME, "root");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		Toast.makeText(context, "Andodab : root inserted!", Toast.LENGTH_LONG)
 				.show();
 	}
@@ -85,34 +85,34 @@ public class ContentProviderUtil {
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-        values.clear();
+		values.clear();
 		values.put(ObjectTable.NAME, "Animal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-        values.clear();
+		values.clear();
 		values.put(ObjectTable.NAME, "Mammal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-        values.clear();
+		values.clear();
 		values.put(ObjectTable.NAME, "Eucalyptus");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-        values.clear();
+		values.clear();
 		values.put(ObjectTable.NAME, "Feuille");
 		values.put(ObjectTable.OBJECT_TYPE, "ObJeCt");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Koala");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
@@ -127,17 +127,18 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-        values.clear();
+		values.clear();
 		values.put(ObjectTable.NAME, "Float");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-        values.clear();
+		values.clear();
 		values.put(ObjectTable.NAME, "Integer");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
 
+		values.clear();
 		Toast.makeText(context, "Andodab : Objects inserted!",
 				Toast.LENGTH_LONG).show();
 	}
@@ -149,22 +150,22 @@ public class ContentProviderUtil {
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("Integer"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "100.0");
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("Float"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Fougere");
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("String"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Banane");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		Toast.makeText(context, "Andodab : Primitive Objects inserted!",
 				Toast.LENGTH_LONG).show();
 	}
@@ -177,26 +178,26 @@ public class ContentProviderUtil {
 		values.put(ObjectEntryTable.VALUE, getID("Float"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, getID("Food"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, getID("Eucalyptus"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 		// PrimitiveEntry
 		values.put(EntryTable.NAME, "energyDensity");
 		values.put(EntryTable.ENTRYTYPE, "Primitive");
 		values.put(PrimitiveEntryTable.VALUE, "100.0");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 	}
 	
 	public List<HashMap<String,String>> getAllObjects() {
@@ -449,8 +450,6 @@ public class ContentProviderUtil {
 		}
 	}
 
-
-
 	public void showDOEntry(View view) {
 		Cursor c = context.getContentResolver().query(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, null, null,
@@ -549,7 +548,29 @@ public class ContentProviderUtil {
                 AndodabContentProvider.CONTENT_URI_OBJECT, values);
 	}
 
-	// TODO Méthode pour récupérer un objet directement
+	// Get all the dicoobjects of the database with all their fields
+	public ArrayList<HashMap<String, String>> getDicoObjects() {
+		ArrayList<HashMap<String, String>> arrayList = new ArrayList<HashMap<String, String>>();
+
+		Cursor c = context.getContentResolver().query(
+				AndodabContentProvider.CONTENT_URI_DICOOBJ, null, null, null,
+				null);
+
+		if (!c.moveToFirst()) {
+			Log.e("SQL", "No DicoObjects yet");
+			return null;
+		} else {
+			do {
+				HashMap<String, String> hashMap = new HashMap<String, String>();
+				hashMap = getObject(c.getString(c
+						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
+				arrayList.add(hashMap);
+			} while (c.moveToNext());
+		}
+		return arrayList;
+	}
+
+	// Méthode pour récupérer un objet directement
 	public HashMap<String, String> getObject(String objectID) {
 		HashMap<String, String> data = new HashMap<String, String>();
 
@@ -573,7 +594,6 @@ public class ContentProviderUtil {
 					c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE)));
 			data.put(ObjectTable.ANCESTOR,
 					c.getString(c.getColumnIndex(ObjectTable.ANCESTOR)));
-          
 		}
 
 		if (data.get(ObjectTable.OBJECT_TYPE).toUpperCase().equals("OBJECT")) {
