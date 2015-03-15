@@ -1,5 +1,8 @@
 package com.example.androidproject.activities;
 
+import java.util.HashMap;
+import java.util.Random;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,23 +10,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.Toast;
+
 import com.example.androidproject.R;
 import com.example.androidproject.database.AndodabContentProvider;
 import com.example.projectandroid2015.util.ContentProviderUtil;
 import com.example.projetandroid2015.tables.DicoObjectTable;
 import com.example.projetandroid2015.tables.ObjectTable;
 
-import java.util.HashMap;
-import java.util.Random;
-
 public class MainActivity extends Activity {
 
 	public static ContentProviderUtil contentUtils;
+	
+	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

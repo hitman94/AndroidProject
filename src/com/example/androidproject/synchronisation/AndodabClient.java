@@ -54,19 +54,18 @@ public class AndodabClient extends Thread{
             socket.connect();
         } catch (IOException connectException) {
             cancel();
-            //Toast.makeText(context, "Impossible d'etablir la connexion", Toast.LENGTH_SHORT).show();
-            System.err.println("connexion invalide");
+            BluetoothActivationReceiver.getHandler().sendEmptyMessage(0);
             return;
         }
 
         try {
 			launchSynchronizeThread(socket);
 		} catch (IOException e) {
-			System.err.println("erreur lors de lenvoie de données");
+			BluetoothActivationReceiver.getHandler().sendEmptyMessage(1);
 			return;
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			BluetoothActivationReceiver.getHandler().sendEmptyMessage(1);
+			return;
 		}
     }
 
@@ -74,7 +73,9 @@ public class AndodabClient extends Thread{
     public void cancel() {
         try {
             socket.close();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+			return;
+        }
     }
 
 
@@ -102,7 +103,6 @@ public class AndodabClient extends Thread{
     	    	MainActivity.contentUtils.addObjet(receivedObj.get(i));
     			} catch(SQLException e) {}
     		}
-    		System.err.println("ajout des objs cote client");
     		for(Entry<String, HashMap<String, String>> entry : receivedProperties.entrySet()) {
     			for(Entry<String,String> propEnt:	entry.getValue().entrySet()) {    			
 	    			try {
@@ -125,7 +125,7 @@ public class AndodabClient extends Thread{
     	Editor editor = pref.edit();
     	editor.putLong(socket.getRemoteDevice().getAddress(), synchroDate);
     	editor.commit();
-    	
+    	BluetoothActivationReceiver.getHandler().sendEmptyMessage(2);
         return;
     }
     

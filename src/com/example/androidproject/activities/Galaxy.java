@@ -66,7 +66,6 @@ public class Galaxy extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.tick) {
-        	Toast.makeText(this, ((ObjectView)rl.getSelectedObject()).getObjectId(), Toast.LENGTH_LONG).show();  
         	Intent i = new Intent();
         	i.putExtra("id", ((ObjectView)rl.getSelectedObject()).getObjectId());
         	setResult(RESULT_OK, i);

@@ -46,20 +46,21 @@ public class AndodabServer extends Thread {
             try {
                 socket = ServerSocket.accept();
             } catch (IOException e) {
+            	BluetoothActivationReceiver.getHandler().sendEmptyMessage(0);
                 break;
             }
             
             try {
 				launchSynchronizeThread(socket);
 			} catch (StreamCorruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				BluetoothActivationReceiver.getHandler().sendEmptyMessage(1);
+				return;
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				BluetoothActivationReceiver.getHandler().sendEmptyMessage(1);
+				return;
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				BluetoothActivationReceiver.getHandler().sendEmptyMessage(1);
+				return;
 			}
             
             if (socket != null) {
@@ -84,7 +85,6 @@ public class AndodabServer extends Thread {
     public void launchSynchronizeThread(BluetoothSocket socket) throws StreamCorruptedException, IOException, ClassNotFoundException{
 		ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-		System.err.println("demarrage de l'envoi");
 		Long synchroDate;
 		List<HashMap<String,String>> objs = MainActivity.contentUtils.getAllObjects();
 		SharedPreferences pref = context.getSharedPreferences(
@@ -130,6 +130,7 @@ public class AndodabServer extends Thread {
 		Editor editor = pref.edit();
 		editor.putLong(socket.getRemoteDevice().getAddress(), synchroDate);
 		editor.commit();
+		BluetoothActivationReceiver.getHandler().sendEmptyMessage(2);
 		return;
     }
 }
