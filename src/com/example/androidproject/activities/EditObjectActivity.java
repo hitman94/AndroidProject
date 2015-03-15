@@ -3,6 +3,7 @@ package com.example.androidproject.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class EditObjectActivity extends Activity {
 
     private String idParent;
     private String idObjet;
+    private Context mContext;
     private ContentProviderUtil util;
     private AlertDialog dial;
     private ArrayList<String> parentProperties;
@@ -40,11 +42,11 @@ public class EditObjectActivity extends Activity {
     private PropertiesAdaptaters adaptaters;
     private HashMap<String,String> objetParent;
     private HashMap<String,String> objet;
-
+    private String lastId;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mContext=this;
         setContentView(R.layout.edit_object_layout);
         Intent i = getIntent();
         util = new ContentProviderUtil(this);
@@ -84,7 +86,7 @@ public class EditObjectActivity extends Activity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String idEntry = adaptaters.getItem(position);
-                    createDialog(idEntry);
+                    createDialog(idEntry,null);
 
                 }
             });
@@ -93,11 +95,11 @@ public class EditObjectActivity extends Activity {
             TextView trueByInheritance = (TextView) findViewById(R.id.sealedHeritage);
             String sealedParent = objetParent.get(DicoObjectTable.SEALED);
             String sealed = objet.get(DicoObjectTable.SEALED);
-            if(sealed.equals("true") && (sealedParent == null ||sealedParent.equals("true"))){
+            if((sealedParent != null && sealedParent.equals("true"))){
                 buttonSwitch.setVisibility(View.GONE);
                 buttonSwitch.setChecked(true);
                 trueByInheritance.setVisibility(View.VISIBLE);
-            }else if( sealedParent.equals("true")){
+            }else if( sealed.equals("true")){
                 buttonSwitch.setChecked(true);
                 trueByInheritance.setVisibility(View.GONE);
             }else {
@@ -145,8 +147,9 @@ public class EditObjectActivity extends Activity {
 
     public void goToSelectParentProperty(View view){
         Intent intent = new Intent(this,ChooseParentPropertyActivity.class);
+        Switch buttonSwitch =  (Switch) findViewById(R.id.switch1);
         String sealed = objet.get(DicoObjectTable.SEALED);
-        if(sealed.equals("true"))
+        if(buttonSwitch.isChecked())
             intent.putExtra("sealed",true);
         intent.putExtra("id",idObjet);
         intent.putExtra("parents",parentProperties);
@@ -174,14 +177,15 @@ public class EditObjectActivity extends Activity {
 
         }else if(requestCode==666){
             if(resultCode == RESULT_OK){
-
+                String idEntry = data.getStringExtra("id");
+                createDialog(lastId,idEntry);
             }
         }
     }
 
-    private void createDialog(final String idEntry){
+    private void createDialog(final String idEntry, final String chooseID){
 
-      /*      AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+           AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setView(this.getLayoutInflater().inflate(R.layout.dialog_edit_property, null));
             dialog.setTitle(getString(R.string.edit_property_dialog_title));
             final HashMap<String,String> entry = util.getEntry(idEntry);
@@ -201,9 +205,16 @@ public class EditObjectActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(),Galaxy.class);
+                    HashMap<String,String> objValue = util.getObject(entry.get(ObjectEntryTable.VALUE));
                     if(isRedefine(idEntry)){
-                        intent.putExtra("rootId",util.getObject(entry.get(ObjectEntryTable.VALUE)).get(ObjectTable.COLUMN_ID));
+                        if (objValue.get(ObjectTable.NAME).equals("root")) {
+                            intent.putExtra("rootId", objValue.get(ObjectTable.COLUMN_ID));
+
+                        } else {
+                            intent.putExtra("rootId", objValue.get(ObjectTable.ANCESTOR).toString());
+                        }
                     }
+                    lastId = idEntry;
                     startActivityForResult(intent, 666);
                     dial.dismiss();
                 }
@@ -214,51 +225,55 @@ public class EditObjectActivity extends Activity {
             final TextView propNameView = (TextView )dial.findViewById(R.id.propName);
             final TextView propValueEditView = (TextView )dial.findViewById(R.id.propValue);
             final TextView propValueView = (TextView )dial.findViewById(R.id.propValueText);
-            propNameView.setText(entry.get(EntryTable.NAME));
+            String valueName = util.getObject(entry.get(ObjectEntryTable.VALUE)).get(ObjectTable.NAME);
 
-            String parentId = parentProperties.get(name);
-            String parentValue = util.getObject(parentId).get(ObjectTable.NAME);
-            String valueName = util.getObject(value).get(ObjectTable.NAME);
-            if(parentValue!=null && (parentValue.equals("String") || parentValue.equals("Float") || parentValue.equals("Integer"))){
+        propNameView.setText(entry.get(EntryTable.NAME));
 
+            if(!entry.get(EntryTable.ENTRYTYPE).equalsIgnoreCase("Object")) {
                 propValueEditView.setVisibility(View.VISIBLE);
                 b.setVisibility(View.GONE);
                 propValueView.setVisibility(View.GONE);
 
-            }else{
+            }else {
                 propValueEditView.setVisibility(View.GONE);
                 propValueView.setText(valueName);
                 b.setVisibility(View.VISIBLE);
                 propValueView.setVisibility(View.VISIBLE);
+                if(chooseID!=null){
+                    propValueView.setText(util.getObject(chooseID).get(ObjectTable.NAME));
+                }
             }
+
+
+
+
+
+
 
             //TODO ça bug si on edit une prop qu'on vien d'edité
             bPositive.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                        if(entry.get(EntryTable.ENTRYTYPE).equalsIgnoreCase("Object")){
+                               if(propValueView.getText() == null || propNameView.getText().toString().isEmpty()) {
 
-                    if(propNameView.getText().toString().isEmpty()){
-                        Toast.makeText(v.getContext(),getString(R.string.toastNameField),Toast.LENGTH_LONG).show();
-                    }else if(propValueEditView.getText().toString().isEmpty()){
-                        Toast.makeText(v.getContext(),getString(R.string.toastValueField),Toast.LENGTH_LONG).show();
-                    }else{
-                       for(int i =0;i<propertiesList.size();i++){
-                           Map.Entry<String,String> entry = propertiesList.get(i);
-                           if(entry.getKey() == propNameView.getText()){
-                               if(propValueEditView.getVisibility() == View.VISIBLE)
-                                entry.setValue(propValueEditView.getText().toString());
-                               else
-                                 entry.setValue(propValueView.getText().toString());
-                               adaptaters.notifyDataSetChanged();
-                           }
-                       }
-                        dial.dismiss();
+                                   Toast.makeText(mContext, R.string.toastValueField, Toast.LENGTH_LONG).show();
+                               }
+                            util.updateID(idObjet,entry.get(EntryTable.ENTRYTYPE),idEntry,chooseID);
+                        }else {
+                            if(propValueEditView.getText() == null || propNameView.getText().toString().isEmpty()) {
+                                Toast.makeText(mContext, R.string.toastValueField, Toast.LENGTH_LONG).show();
+                            }
+                            util.deleteDOET(idEntry,idObjet);
+                            String id = util.addPrimitiveProperty(idObjet,propNameView.getText().toString(),propValueEditView.getText().toString());
+                            properties.add(id);
+                            properties.remove(idEntry);
+                        }
+                    adaptaters.notifyDataSetChanged();
+                    dial.dismiss();
                     }
-                }
+
             });
-        }else{
-            dial.show();
-        }*/
     }
 
 
@@ -294,6 +309,11 @@ public class EditObjectActivity extends Activity {
             }
         }
         return false;
+    }
+
+    public void delete(View view){
+        util.deleteObject(idObjet);
+        finish();
     }
 
 }

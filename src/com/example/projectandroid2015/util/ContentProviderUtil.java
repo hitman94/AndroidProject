@@ -90,35 +90,35 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 		values.clear();
 		values.put(ObjectTable.NAME, "Mammal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 		values.clear();
 		values.put(ObjectTable.NAME, "Eucalyptus");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 		values.clear();
 		values.put(ObjectTable.NAME, "Feuille");
 		values.put(ObjectTable.OBJECT_TYPE, "ObJeCt");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 		values.clear();
 		values.put(ObjectTable.NAME, "Koala");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 
 		values.clear();
 
@@ -126,12 +126,12 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.NAME, "String");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 		values.clear();
 		values.put(ObjectTable.NAME, "Float");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECT, values);
+                AndodabContentProvider.CONTENT_URI_OBJECT, values);
 		values.clear();
 		values.put(ObjectTable.NAME, "Integer");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
@@ -154,12 +154,12 @@ public class ContentProviderUtil {
 		values.put(PrimitiveObjectTable.COLUMN_ID, "100.0");
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("Float"));
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
+                AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
 		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Fougere");
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("String"));
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
+                AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
 		values.clear();
 		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Banane");
@@ -183,13 +183,13 @@ public class ContentProviderUtil {
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, getID("Food"));
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_ENTRY, values);
+                AndodabContentProvider.CONTENT_URI_ENTRY, values);
 		values.clear();
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, getID("Eucalyptus"));
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_ENTRY, values);
+                AndodabContentProvider.CONTENT_URI_ENTRY, values);
 		values.clear();
 		// PrimitiveEntry
 		values.put(EntryTable.NAME, "energyDensity");
@@ -236,7 +236,7 @@ public class ContentProviderUtil {
 		values.put(DicObjectEntryTable.COLUMN_ID2, objectId);
 
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
+                AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
 
 		values.clear();
 
@@ -268,7 +268,7 @@ public class ContentProviderUtil {
 		values.put(PrimitiveEntryTable.VALUE, value);
 
 		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_ENTRY, values);
+                AndodabContentProvider.CONTENT_URI_ENTRY, values);
 
 		String propertyID = values.get(EntryTable.COLUMN_ID).toString();
 
@@ -461,7 +461,7 @@ public class ContentProviderUtil {
 								.getColumnIndex(ObjectEntryTable.COLUMN_ID))
 						+ " "
 						+ getName(c.getString(c
-								.getColumnIndex(ObjectEntryTable.VALUE)));
+                        .getColumnIndex(ObjectEntryTable.VALUE)));
 			} while (c.moveToNext());
 			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
 		}
@@ -686,11 +686,11 @@ public class ContentProviderUtil {
 				Cursor cE = context
 						.getContentResolver()
 						.query(AndodabContentProvider.CONTENT_URI_ENTRY,
-								null,
-								"_id = "
-										+ c.getString(c
-												.getColumnIndex(DicObjectEntryTable.COLUMN_ID)),
-								null, "_id");
+                                null,
+                                "_id = "
+                                        + c.getString(c
+                                        .getColumnIndex(DicObjectEntryTable.COLUMN_ID)),
+                                null, "_id");
 
 				if (!cE.moveToFirst()) {
 					return properties;
@@ -735,8 +735,8 @@ public class ContentProviderUtil {
 		ArrayList<String> properties = new ArrayList<String>();
 
 		Cursor c = context.getContentResolver().query(
-				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, null,
-				"_idDO = '" + objectID + "'", null, "_id");
+                AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, null,
+                "_idDO = '" + objectID + "'", null, "_id");
 
 		if (!c.moveToFirst()) {
 			return properties;
@@ -1004,7 +1004,6 @@ public class ContentProviderUtil {
 				ObjectEntryTable.VALUE + " = '" + object + "'", null, "_id");
 
 		if (!c.moveToFirst()) {
-			return;
 		} else {
 			do {
 				context.getContentResolver()
@@ -1058,7 +1057,7 @@ public class ContentProviderUtil {
 		// For each child of the object to delete update the ancestor to the
 		// ancestor of the object to delete
 		if (!c.moveToFirst()) {
-			return;
+
 		} else {
 			do {
 				ContentValues contentValues = new ContentValues();
@@ -1161,20 +1160,20 @@ public class ContentProviderUtil {
 		if (cE.getString(cE.getColumnIndex(EntryTable.ENTRYTYPE)).toUpperCase()
 				.equals("OBJECT")) {
 			detailEntry = context.getContentResolver().query(
-					AndodabContentProvider.CONTENT_URI_OBJECTENTRY,
-					null,
-					"_id = "
-							+ cE.getString(cE
-									.getColumnIndex(EntryTable.COLUMN_ID)),
-					null, "_id");
+                    AndodabContentProvider.CONTENT_URI_OBJECTENTRY,
+                    null,
+                    "_id = "
+                            + cE.getString(cE
+                            .getColumnIndex(EntryTable.COLUMN_ID)),
+                    null, "_id");
 		} else {
 			detailEntry = context.getContentResolver().query(
-					AndodabContentProvider.CONTENT_URI_PRIMITIVEENTRY,
-					null,
-					"_id = "
-							+ cE.getString(cE
-									.getColumnIndex(EntryTable.COLUMN_ID)),
-					null, "_id");
+                    AndodabContentProvider.CONTENT_URI_PRIMITIVEENTRY,
+                    null,
+                    "_id = "
+                            + cE.getString(cE
+                            .getColumnIndex(EntryTable.COLUMN_ID)),
+                    null, "_id");
 		}
 		if (!detailEntry.moveToFirst()) {
 			return null;

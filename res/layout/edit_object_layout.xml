@@ -121,4 +121,13 @@
             android:layout_alignTop="@+id/switch1"
             android:layout_toRightOf="@+id/switch1"/>
 
+    <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button3"
+            android:background="@drawable/trash"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/button2"
+            android:onClick="delete"/>
+
 </RelativeLayout>
