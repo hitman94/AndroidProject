@@ -1,17 +1,23 @@
 ## Andodab
 
-### Installation
+### Compilation avec ANT
 
-Pour utiliser notre projet, 2 options sont possibles :
+-Assurez vous que ant soit correctement installés et que les dossier platform-tools et tools du sdk android soit dans votre variable PATH.
 
-- Importer l'archive dans l'IDE de votre choix en tant que "Android Application Project" ou équivalent.
+-Editez le fichiez local.properties présent à la racine du projet en y mettant votre dossier du SDK android
 
-- Utiliser le script build.xml présent à la racine du projet.
+-Lancez  la commande "ant release" pour générer tous les fichiers du projets (l'apk se trouve dans le répertoire bin )
 
 ### Utilisation
 
-Notre projet permet de gérer (ajouter / éditer / supprimer) des objets contenus dans une galaxie d'objets avec des relations d'héritage et la possibilité de synchroniser des galaxies entre-elles.
+Notre projet permet de gérer (ajouter / éditer / supprimer) des objets contenus dans une galaxie d'objets avec des relations d'héritage et la possibilité de synchroniser des bases de données entre-elles.
 
+
+### Fonction non implémentées 
+
+Seulement la premiere partie de la synchronisation fonctionne ( lorsque deux appareils ne se sont jamais synchronisés) et en bluetooth seulement.
+
+Pas de service de notification.
 
 ### Réalisation
 
