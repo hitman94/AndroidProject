@@ -247,7 +247,21 @@ public class ContentProviderUtil {
 	public String addPrimitiveProperty(String objectId, String name,
 			String value) {
 
+
 		ContentValues values = new ContentValues();
+
+        values.put(PrimitiveObjectTable.COLUMN_ID, value);
+        if (value.matches("^[0-9]+.[0-9]+$"))
+            values.put(PrimitiveObjectTable.ANCESTOR, getID("Float"));
+        else if (value.matches("^[0-9]+$"))
+            values.put(PrimitiveObjectTable.ANCESTOR, getID("Integer"));
+        else
+            values.put(PrimitiveObjectTable.ANCESTOR, getID("String"));
+
+        context.getContentResolver().insert(
+                AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
+
+        values.clear();
 
 		values.put(EntryTable.NAME, name);
 		values.put(EntryTable.ENTRYTYPE, "Primitive");
@@ -260,7 +274,7 @@ public class ContentProviderUtil {
 
 		values.clear();
 
-		values.put(DicObjectEntryTable.COLUMN_ID, getEntryID(name, value));
+		values.put(DicObjectEntryTable.COLUMN_ID, propertyID);
 		values.put(DicObjectEntryTable.COLUMN_ID2, objectId);
 
 		context.getContentResolver().insert(
@@ -268,16 +282,7 @@ public class ContentProviderUtil {
 
 		values.clear();
 
-		values.put(PrimitiveObjectTable.COLUMN_ID, value);
-		if (value.matches("^[0-9]+.[0-9]+$"))
-			values.put(PrimitiveObjectTable.ANCESTOR, getID("Float"));
-		else if (value.matches("^[0-9]+$"))
-			values.put(PrimitiveObjectTable.ANCESTOR, getID("Integer"));
-		else
-			values.put(PrimitiveObjectTable.ANCESTOR, getID("String"));
 
-		context.getContentResolver().insert(
-				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
 
 		return propertyID;
 
