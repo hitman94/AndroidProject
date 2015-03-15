@@ -47,9 +47,20 @@
         android:id="@+id/sync"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/createObject"
-        android:layout_below="@+id/createObject"
         android:text="Synchronisation"
-        android:onClick="synchronize" />
+        android:onClick="synchronize"
+        android:layout_below="@+id/button"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignStart="@+id/button"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Editer Objet"
+            android:id="@+id/button"
+            android:layout_below="@+id/createObject"
+            android:layout_alignLeft="@+id/createObject"
+            android:layout_alignStart="@+id/createObject"
+            android:onClick="editeObj"/>
 
 </RelativeLayout>

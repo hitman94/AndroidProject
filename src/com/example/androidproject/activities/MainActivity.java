@@ -99,6 +99,21 @@ public class MainActivity extends Activity {
                 startActivity(i);
             }
         }
+        if(requestCode == 666){
+            if(resultCode == RESULT_OK){
+
+                String id =  data.getStringExtra("id");
+                Intent i = new Intent(this, EditObjectActivity.class);
+                i.putExtra("idObjet",id);
+                startActivity(i);
+            }
+        }
+    }
+
+    public void editeObj(View view){
+        Intent i = new Intent(this,Galaxy.class);
+        Toast.makeText(this,getString(R.string.toast_choose_objet),Toast.LENGTH_LONG).show();
+        startActivityForResult(i, 666);
     }
 
     @Override
