@@ -14,6 +14,7 @@ import java.util.Set;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -53,6 +54,7 @@ public class AndodabClient extends Thread{
             socket.connect();
         } catch (IOException connectException) {
             cancel();
+            //Toast.makeText(context, "Impossible d'etablir la connexion", Toast.LENGTH_SHORT).show();
             System.err.println("connexion invalide");
             return;
         }
@@ -83,8 +85,8 @@ public class AndodabClient extends Thread{
     	Long synchroDate = System.currentTimeMillis();
     	List<HashMap<String,String>> objs = MainActivity.contentUtils.getAllObjects();
     	SharedPreferences pref = context.getSharedPreferences("andodabSyncDevices", Context.MODE_PRIVATE);
-    	
-    	
+
+
     	in.readObject();
     	out.writeObject(synchroDate);
     	in.readObject();

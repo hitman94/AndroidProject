@@ -12,22 +12,20 @@ import java.io.OutputStream;
 public class ManageDataExchange extends Thread{
     private final BluetoothSocket socket;
     private final InputStream inStream;
-    private final OutputStream mmOutStream;
+    private final OutputStream OutStream;
 
     public ManageDataExchange(BluetoothSocket socket) {
         this.socket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
 
-        // Get the input and output streams, using temp objects because
-        // member streams are final
         try {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
         } catch (IOException e) { }
 
         inStream = tmpIn;
-        mmOutStream = tmpOut;
+        OutStream = tmpOut;
     }
 
     @Override

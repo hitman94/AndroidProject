@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.example.projectandroid2015.util.ContentProviderUtil;
 import com.example.projetandroid2015.tables.DicObjectEntryTable;
 import com.example.projetandroid2015.tables.DicoObjectTable;
 import com.example.projetandroid2015.tables.EntryTable;
@@ -243,7 +244,7 @@ public class AndodabContentProvider extends ContentProvider {
 				String sealed = values.getAsString(DicoObjectTable.SEALED);
 				values.remove(DicoObjectTable.SEALED);
 
-				// root
+				// ID random
 				if (values.getAsString(ObjectTable.NAME).equals("root")) {
 					values.put(ObjectTable.COLUMN_ID,
 							AndodabContentProvider.idroot);
@@ -282,7 +283,8 @@ public class AndodabContentProvider extends ContentProvider {
 					}
 				} else {
 					Random random = new Random();
-					values.put(ObjectTable.COLUMN_ID, random.nextLong());
+
+                        values.put(ObjectTable.COLUMN_ID, random.nextLong());
 
 					// meaning the ancestor is the root
 					if (values.get(ObjectTable.ANCESTOR) == null
@@ -297,6 +299,7 @@ public class AndodabContentProvider extends ContentProvider {
 				values.put(ObjectTable.TIMESTAMP, new SimpleDateFormat(
 						"yyyy-MM-dd HH:mm:ss").format(new Date()));
 
+				
 				tmp = values.getAsString(ObjectTable.OBJECT_TYPE);
 				values.remove(ObjectTable.OBJECT_TYPE);
 				// insert an object type

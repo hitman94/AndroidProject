@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <EditText
-            android:id="@+id/propName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/property_name"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/button_dialog"/>
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <EditText
             android:id="@+id/propValue"
@@ -19,19 +12,78 @@
             android:fontFamily="sans-serif"
             android:hint="@string/property_value"
             android:layout_below="@+id/propName"
+            android:layout_alignRight="@+id/propName"
+            android:layout_alignEnd="@+id/propName"
             android:layout_alignLeft="@+id/propName"
-            android:layout_alignStart="@+id/propName"
+            android:layout_alignStart="@+id/propName"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/propName"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
+            android:layout_alignRight="@+id/button_dialog"
+            android:layout_alignEnd="@+id/button_dialog"
+            android:hint="@string/hint_name"
+            android:layout_marginRight="15dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="..."
+            android:id="@+id/propValueText"
+            android:layout_below="@+id/propValue"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
             android:layout_toLeftOf="@+id/button_dialog"/>
 
     <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose Value"
+            android:text="change value"
             android:id="@+id/button_dialog"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignBottom="@+id/propValue"
+            android:layout_below="@+id/propValue"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/propName"/>
+            android:layout_alignBottom="@+id/textView"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Primitive Property ?"
+            android:id="@+id/textView"
+            android:layout_below="@+id/propValueText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+    <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_alignLeft="@+id/propValueText"
+            android:layout_alignStart="@+id/propValueText">
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yes"
+                android:id="@+id/radioButton"
+                android:checked="true"/>
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/non"
+                android:id="@+id/radioButton2"
+                android:checked="true"/>
+    </RadioGroup>
 
 </RelativeLayout>

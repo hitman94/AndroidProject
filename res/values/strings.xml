@@ -22,5 +22,8 @@
     <string name="toast_property_already_defined">Property already defined</string>
     <string name="edit_property_dialog_title">Edit property</string>
     <string name="title_activity_synchronizer">Synchronizer</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="non">no</string>
 
 </resources>

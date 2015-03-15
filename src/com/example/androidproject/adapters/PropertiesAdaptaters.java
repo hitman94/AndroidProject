@@ -10,8 +10,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 import com.example.androidproject.R;
+import com.example.projectandroid2015.util.ContentProviderUtil;
+import com.example.projetandroid2015.tables.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,16 +23,18 @@ import java.util.Map;
 public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
 
    // private PropertyFilter propertyFilter;
-    private ArrayList<Map.Entry<String,String>> props;
-    private ArrayList<Map.Entry<String,String>> filteredProps;
+    private ArrayList<String> props;
+    private ArrayList<String> filteredProps;
     private Activity mContext;
     private propertyFilter filter;
     private LayoutInflater mLayoutInflater = null;
+    private ContentProviderUtil util;
 
 
 
-    public PropertiesAdaptaters(Activity mContext,ArrayList<Map.Entry<String,String>> list){
+    public PropertiesAdaptaters(Activity mContext,ArrayList<String> list){
         this.mContext = mContext;
+        util = new ContentProviderUtil(mContext);
         props = list;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         filteredProps = list;
@@ -42,7 +47,7 @@ public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
     }
 
     @Override
-    public Map.Entry<String,String> getItem(int position) {
+    public String getItem(int position) {
         return filteredProps.get(position);
     }
 
@@ -54,8 +59,8 @@ public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-        final Map.Entry<String,String> entry = (Map.Entry<String,String>) getItem(position);
-
+        final String idEntry = getItem(position);
+        final HashMap<String,String> entry = util.getEntry(idEntry);
 
         if(convertView==null){
                convertView = mLayoutInflater.inflate(R.layout.simple_map_layout,parent,false);
@@ -68,8 +73,14 @@ public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.propertyName.setText(entry.getKey());
-        holder.propertyValue.setText(entry.getValue());
+        HashMap<String,String> obj = util.getObject(entry.get(ObjectEntryTable.VALUE));
+        holder.propertyName.setText(entry.get(EntryTable.NAME));
+        String valueProp;
+        if((valueProp = obj.get(ObjectTable.NAME))!=null){
+            holder.propertyValue.setText(valueProp);
+        }else{
+            holder.propertyValue.setText(entry.get(ObjectEntryTable.VALUE));
+        }
         return convertView;
     }
 
@@ -92,10 +103,11 @@ public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults result = new FilterResults();
             if(constraint!=null && constraint.length()>0){
-                ArrayList<Map.Entry<String,String>> tmp = new ArrayList<Map.Entry<String, String>>();
-                    for(Map.Entry<String,String> entry : props){
-                        if(entry.getKey().toLowerCase().contains(constraint.toString().toLowerCase())){
-                            tmp.add(entry);
+                ArrayList<String> tmp = new ArrayList<String>();
+                    for(String idEntry : props){
+                        HashMap<String,String> entry = util.getEntry(idEntry);
+                        if(entry.get(EntryTable.NAME).toLowerCase().contains(constraint.toString().toLowerCase())){
+                            tmp.add(idEntry);
                         }
                     }
                 result.count = tmp.size();
@@ -109,7 +121,7 @@ public class PropertiesAdaptaters extends BaseAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredProps = (ArrayList<Map.Entry<String,String>>) results.values;
+            filteredProps = (ArrayList<String>) results.values;
             notifyDataSetChanged();
         }
     }

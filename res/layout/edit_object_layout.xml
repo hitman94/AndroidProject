@@ -29,7 +29,8 @@
             android:layout_below="@+id/objName"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/objName"/>
 
     <TextView
             android:layout_width="wrap_content"
@@ -80,5 +81,44 @@
             android:layout_alignBottom="@+id/objName"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/button2"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/button"
+            android:background="@drawable/save"
+            android:onClick="saveObject"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Sealed :"
+            android:id="@+id/sealedText"
+            android:layout_below="@+id/preInheritObj"
+            android:layout_toLeftOf="@+id/InheritsName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+    <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch1"
+            android:layout_below="@+id/InheritsName"
+            android:layout_toRightOf="@+id/InheritsName"
+            android:checked="false"
+            android:layout_alignBottom="@+id/sealedText"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="true by inheritance"
+            android:id="@+id/sealedHeritage"
+            android:layout_alignTop="@+id/switch1"
+            android:layout_toRightOf="@+id/switch1"/>
 
 </RelativeLayout>
