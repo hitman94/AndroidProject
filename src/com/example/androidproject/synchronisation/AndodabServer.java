@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -102,18 +103,24 @@ public class AndodabServer extends Thread {
     		System.err.println("Envoi des objs cote serveur");
     		AndodabClient.sendProperties(objs, out, in);
     		System.err.println("Ebnvoi  des prop cote serveur");
-    		for(int i =0;i<receivedObj.size();i++) {
-    	    	MainActivity.contentUtils.addObjet(receivedObj.get(i));
+    		for(int i =0;i<receivedObj.size()-1;i++) {
+    	    	//MainActivity.contentUtils.addObjet(receivedObj.get(i));
+    			Log.e("objet", receivedObj.get(i).toString());
     		}
     		System.err.println("ajout des objs cote serveur");
     		
     		for(Entry<String, HashMap<String, String>> entry : receivedProperties.entrySet()) {
-    			try {
-    				MainActivity.contentUtils.getName(entry.getValue().get(ObjectEntryTable.VALUE));
-    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Object", entry.getValue().get(ObjectEntryTable.VALUE));
-    			}catch(CursorIndexOutOfBoundsException e) {
-    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Primitive", entry.getValue().get(PrimitiveEntryTable.VALUE));
-    			}
+    			if(entry.getValue().size()==0)
+    				continue;
+    			Log.e("pro", entry.getKey());
+    			Log.e("prop", entry.getValue().toString());
+    			
+//    			try {
+//    				MainActivity.contentUtils.getName(entry.getValue().get(ObjectEntryTable.VALUE));
+//    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Object", entry.getValue().get(ObjectEntryTable.VALUE));
+//    			}catch(CursorIndexOutOfBoundsException e) {
+//    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Primitive", entry.getValue().get(PrimitiveEntryTable.VALUE));
+//    			}
     		}
     		
     	}else {// Update

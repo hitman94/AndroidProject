@@ -15,7 +15,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.example.projetandroid2015.tables.DicObjectEntryTable;
 import com.example.projetandroid2015.tables.DicoObjectTable;
@@ -262,7 +261,8 @@ public class AndodabContentProvider extends ContentProvider {
 				} else { // random
 
 					Random random = new Random();
-					values.put(ObjectTable.COLUMN_ID, random.nextLong());
+					if(values.get(ObjectTable.COLUMN_ID) == null)
+						values.put(ObjectTable.COLUMN_ID, random.nextLong());
 
 					// meaning the ancestor is the root
 					if (values.get(ObjectTable.ANCESTOR) == null
@@ -301,9 +301,7 @@ public class AndodabContentProvider extends ContentProvider {
 					database.insert(ObjectPPrimitiveTable.TABLE_NAME, "",
 							val_object);
 				} else {
-					Toast.makeText(getContext(),
-							"Object type must be Object or Primitive",
-							Toast.LENGTH_LONG);
+
 					return uri;
 				}
 
@@ -316,10 +314,7 @@ public class AndodabContentProvider extends ContentProvider {
 					return newuri;
 				}
 			} else {
-				Toast.makeText(
-						getContext(),
-						"The fields for the new Object are not in a correct format. Use id:String, type:ObjectPPrimitive/DicoObject !",
-						Toast.LENGTH_LONG).show();
+			
 				return uri;
 			}
 
@@ -366,9 +361,7 @@ public class AndodabContentProvider extends ContentProvider {
 								val_object);
 
 					} else {
-						Toast.makeText(getContext(),
-								"Entry type must be Object or Primitive",
-								Toast.LENGTH_LONG);
+					
 						return uri;
 					}
 
@@ -381,16 +374,11 @@ public class AndodabContentProvider extends ContentProvider {
 						return newuri;
 					}
 				} else {
-					Toast.makeText(
-							getContext(),
-							"The fields for the new Entry are not in a correct format. Use id:integer, type:ObjectEntry/PrimitiveEntry !",
-							Toast.LENGTH_LONG).show();
+					
 					return uri;
 				}
 			} catch (NumberFormatException nfe) {
-				Toast.makeText(getContext(),
-						"The id for entry you entered is not an integer !",
-						Toast.LENGTH_LONG).show();
+			
 				return uri;
 			}
 			break;
@@ -404,8 +392,7 @@ public class AndodabContentProvider extends ContentProvider {
 				id = database.insert(PrimitiveObjectTable.TABLE_NAME, "",
 						values);
 			} else {
-				Toast.makeText(getContext(), "You must define an id!",
-						Toast.LENGTH_LONG).show();
+			
 				return uri;
 			}
 			if (id > 0) {
@@ -457,8 +444,7 @@ public class AndodabContentProvider extends ContentProvider {
 			break;
 		}
 
-		Toast.makeText(getContext(), "Bad insert, check your data !",
-				Toast.LENGTH_LONG).show();
+	
 		return uri;
 	}
 

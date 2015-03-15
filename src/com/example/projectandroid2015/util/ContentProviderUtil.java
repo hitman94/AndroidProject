@@ -70,7 +70,7 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.NAME, "root");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		Toast.makeText(context, "Andodab : root inserted!", Toast.LENGTH_LONG)
 				.show();
 	}
@@ -84,34 +84,34 @@ public class ContentProviderUtil {
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Animal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Mammal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Eucalyptus");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Feuille");
 		values.put(ObjectTable.OBJECT_TYPE, "ObJeCt");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Koala");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
@@ -126,17 +126,18 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Float");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+		values.clear();
 		values.put(ObjectTable.NAME, "Integer");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
 
+		values.clear();
 		Toast.makeText(context, "Andodab : Objects inserted!",
 				Toast.LENGTH_LONG).show();
 	}
@@ -148,22 +149,22 @@ public class ContentProviderUtil {
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("Integer"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "100.0");
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("Float"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Fougere");
 		values.put(PrimitiveObjectTable.ANCESTOR, getID("String"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		values.clear();
 		values.put(PrimitiveObjectTable.COLUMN_ID, "Banane");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECTPRIMITIVE, values);
-
+		values.clear();
 		Toast.makeText(context, "Andodab : Primitive Objects inserted!",
 				Toast.LENGTH_LONG).show();
 	}
@@ -176,26 +177,26 @@ public class ContentProviderUtil {
 		values.put(ObjectEntryTable.VALUE, getID("Float"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, getID("Food"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 		values.put(EntryTable.NAME, "food");
 		values.put(EntryTable.ENTRYTYPE, "Object");
 		values.put(ObjectEntryTable.VALUE, getID("Eucalyptus"));
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 		// PrimitiveEntry
 		values.put(EntryTable.NAME, "energyDensity");
 		values.put(EntryTable.ENTRYTYPE, "Primitive");
 		values.put(PrimitiveEntryTable.VALUE, "100.0");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_ENTRY, values);
-
+		values.clear();
 	}
 	
 	public List<HashMap<String,String>> getAllObjects() {
