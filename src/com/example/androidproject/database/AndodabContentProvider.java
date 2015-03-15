@@ -282,7 +282,8 @@ public class AndodabContentProvider extends ContentProvider {
 					}
 				} else {
 					Random random = new Random();
-					values.put(ObjectTable.COLUMN_ID, random.nextLong());
+					if(!values.containsKey(ObjectTable.COLUMN_ID))
+						values.put(ObjectTable.COLUMN_ID, random.nextLong());
 
 					// meaning the ancestor is the root
 					if (values.get(ObjectTable.ANCESTOR) == null

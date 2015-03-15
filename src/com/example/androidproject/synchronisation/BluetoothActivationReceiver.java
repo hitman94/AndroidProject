@@ -16,11 +16,12 @@ public class BluetoothActivationReceiver extends BroadcastReceiver{
 		if(adapter.isEnabled()) {
 			server = new AndodabServer(context);
 			Toast.makeText(context, "Waiting for connexion", Toast.LENGTH_SHORT).show();
-			server.start();			
+			server.start();		
 		}			
 		else if (!adapter.isEnabled()) {
-			if(server!=null)
+			if(server!=null) {
 				server.cancel();
+			}
 		}
 	}
 

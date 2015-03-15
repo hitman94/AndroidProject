@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.SQLException;
 import android.util.Log;
 
 import java.io.IOException;
@@ -70,7 +71,6 @@ public class AndodabServer extends Thread {
                 }
                
             }
-            break;
         }
     }
 
@@ -96,38 +96,37 @@ public class AndodabServer extends Thread {
 		out.writeObject(1);
 		if(pref.getLong(socket.getRemoteDevice().getAddress(), -1) == -1) { // 1ere synchro
 			List<HashMap<String, String>> receivedObj = AndodabClient.receiveObjets(out, in);
-			System.err.println("Recepetion des objs cote serveur");
     		HashMap<String,HashMap<String,String>> receivedProperties =AndodabClient.receiveProperties(out, in);
-    		System.err.println("Recepetion des prop cote serveur");
     		AndodabClient.sendObjects(objs, out, in);
-    		System.err.println("Envoi des objs cote serveur");
     		AndodabClient.sendProperties(objs, out, in);
-    		System.err.println("Ebnvoi  des prop cote serveur");
-    		for(int i =0;i<receivedObj.size()-1;i++) {
-    	    	//MainActivity.contentUtils.addObjet(receivedObj.get(i));
-    			Log.e("objet", receivedObj.get(i).toString());
+    		for(int i =0;i<receivedObj.size();i++) {
+    			try {
+    				MainActivity.contentUtils.addObjet(receivedObj.get(i));
+    			}catch(SQLException e){
+    			}
     		}
-    		System.err.println("ajout des objs cote serveur");
     		
     		for(Entry<String, HashMap<String, String>> entry : receivedProperties.entrySet()) {
     			if(entry.getValue().size()==0)
     				continue;
+    			
     			Log.e("pro", entry.getKey());
     			Log.e("prop", entry.getValue().toString());
     			
-//    			try {
-//    				MainActivity.contentUtils.getName(entry.getValue().get(ObjectEntryTable.VALUE));
-//    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Object", entry.getValue().get(ObjectEntryTable.VALUE));
-//    			}catch(CursorIndexOutOfBoundsException e) {
-//    				MainActivity.contentUtils.addProperty(entry.getKey(), entry.getValue().get(EntryTable.NAME), "Primitive", entry.getValue().get(PrimitiveEntryTable.VALUE));
-//    			}
+    			for(Entry<String,String> propEnt:	entry.getValue().entrySet()) {    			
+	    			try {
+	    				MainActivity.contentUtils.getName(propEnt.getValue());
+	    				MainActivity.contentUtils.addObjectProperty(entry.getKey(), propEnt.getKey(), propEnt.getValue());
+	    			}catch(CursorIndexOutOfBoundsException e) {
+	    				MainActivity.contentUtils.addPrimitiveProperty(entry.getKey(), propEnt.getKey(), propEnt.getValue());
+	    			}
+    			}
     		}
     		
     	}else {// Update
     		
     	}
 
-		
 		Editor editor = pref.edit();
 		editor.putLong(socket.getRemoteDevice().getAddress(), synchroDate);
 		editor.commit();
