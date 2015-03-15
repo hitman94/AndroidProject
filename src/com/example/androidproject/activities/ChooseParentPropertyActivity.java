@@ -57,14 +57,26 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
                 String idProp = adaptaters.getItem(position);
                 Map<String,String> entry = util.getEntry(idProp);
                 String valueName = util.getObject(entry.get(ObjectEntryTable.VALUE)).get(ObjectTable.NAME);
-                if(valueName.equals("String") || valueName.equals("Integer") || valueName.equals("Float")){
-                        //TODO alertbox puis création de la prop avec type primitive
-                    System.out.println("test");
+                if(!entry.get(EntryTable.ENTRYTYPE).equals("Object")){
+
                 }else {
-                    nameClic = entry.get(EntryTable.NAME);
-                    Toast.makeText(mContext, "Choose new value", Toast.LENGTH_LONG).show();
-                    Intent i = new Intent(mContext, Galaxy.class);
-                    startActivityForResult(i, 555);
+                    if (valueName.equals("String") || valueName.equals("Integer") || valueName.equals("Float")) {
+                        //TODO alertbox puis création de la prop avec type primitive
+                        System.out.println("test");
+                    } else {
+                        nameClic = entry.get(EntryTable.NAME);
+                        Toast.makeText(mContext, "Choose new value", Toast.LENGTH_LONG).show();
+
+                        Intent i = new Intent(mContext, Galaxy.class);
+                        HashMap<String, String> objValue = util.getObject(entry.get(ObjectEntryTable.VALUE));
+                        if (objValue.get(ObjectTable.NAME).equals("root")) {
+                            i.putExtra("idRoot", objValue.get(ObjectTable.COLUMN_ID));
+
+                        } else {
+                            i.putExtra("idRoot", objValue.get(ObjectTable.ANCESTOR).toString());
+                        }
+                        startActivityForResult(i, 555);
+                    }
                 }
             }
         });
@@ -87,7 +99,7 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
         }else  if(requestCode==555){
 
             String idValue = data.getStringExtra("id");
-            String idProp=util.addProperty(idObjet,nameClic,"Object",idValue);
+            String idProp=util.addObjectProperty(idObjet,nameClic,idValue);
             Intent i = new Intent();
             i.putExtra("idProperty",idProp);
             setResult(RESULT_OK, i);
@@ -222,10 +234,11 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
                     String idProp;
                     if(radioButton.isChecked()){
 
-                        idProp=util.addProperty(idObjet,name,"Primitive",value);
+
+                        idProp =util.addPrimitiveProperty(idObjet,name,value);
                     }else{
 
-                        idProp=util.addProperty(idObjet,name,"Object",value);
+                        idProp=util.addObjectProperty(idObjet,name,value);
                     }
 
                     Intent i = new Intent();
