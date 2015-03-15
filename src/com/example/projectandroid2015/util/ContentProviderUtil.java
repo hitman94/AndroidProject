@@ -1,6 +1,7 @@
 package com.example.projectandroid2015.util;
 
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,27 +85,27 @@ public class ContentProviderUtil {
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+        values.clear();
 		values.put(ObjectTable.NAME, "Animal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+        values.clear();
 		values.put(ObjectTable.NAME, "Mammal");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Animal"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+        values.clear();
 		values.put(ObjectTable.NAME, "Eucalyptus");
 		values.put(ObjectTable.OBJECT_TYPE, "Object");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
 		values.put(DicoObjectTable.SEALED, "false");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+        values.clear();
 		values.put(ObjectTable.NAME, "Feuille");
 		values.put(ObjectTable.OBJECT_TYPE, "ObJeCt");
 		values.put(ObjectTable.ANCESTOR, getID("Food"));
@@ -126,12 +127,12 @@ public class ContentProviderUtil {
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+        values.clear();
 		values.put(ObjectTable.NAME, "Float");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_OBJECT, values);
-
+        values.clear();
 		values.put(ObjectTable.NAME, "Integer");
 		values.put(ObjectTable.OBJECT_TYPE, "Primitive");
 		context.getContentResolver().insert(
@@ -237,7 +238,7 @@ public class ContentProviderUtil {
 		values.clear();
 
 		values.put(DicObjectEntryTable.COLUMN_ID, getEntryID(name, value));
-		values.put(DicObjectEntryTable.COLUMN_ID2, value);
+		values.put(DicObjectEntryTable.COLUMN_ID2, objectId);
 
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
@@ -448,6 +449,8 @@ public class ContentProviderUtil {
 		}
 	}
 
+
+
 	public void showDOEntry(View view) {
 		Cursor c = context.getContentResolver().query(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, null, null,
@@ -546,29 +549,7 @@ public class ContentProviderUtil {
                 AndodabContentProvider.CONTENT_URI_OBJECT, values);
 	}
 
-	// Get all the dicoobjects of the database with all their fields
-	public ArrayList<HashMap<String, String>> getDicoObjects() {
-		ArrayList<HashMap<String, String>> arrayList = new ArrayList<HashMap<String, String>>();
-
-		Cursor c = context.getContentResolver().query(
-				AndodabContentProvider.CONTENT_URI_DICOOBJ, null, null, null,
-				null);
-
-		if (!c.moveToFirst()) {
-			Log.e("SQL", "No DicoObjects yet");
-			return null;
-		} else {
-			do {
-				HashMap<String, String> hashMap = new HashMap<String, String>();
-				hashMap = getObject(c.getString(c
-						.getColumnIndex(DicoObjectTable.COLUMN_ID)));
-				arrayList.add(hashMap);
-			} while (c.moveToNext());
-		}
-		return arrayList;
-	}
-
-	// Méthode pour récupérer un objet directement
+	// TODO Méthode pour récupérer un objet directement
 	public HashMap<String, String> getObject(String objectID) {
 		HashMap<String, String> data = new HashMap<String, String>();
 
@@ -592,6 +573,7 @@ public class ContentProviderUtil {
 					c.getString(c.getColumnIndex(ObjectTable.OBJECT_TYPE)));
 			data.put(ObjectTable.ANCESTOR,
 					c.getString(c.getColumnIndex(ObjectTable.ANCESTOR)));
+          
 		}
 
 		if (data.get(ObjectTable.OBJECT_TYPE).toUpperCase().equals("OBJECT")) {
@@ -688,6 +670,27 @@ public class ContentProviderUtil {
 			return properties;
 		}
 	}
+    public ArrayList<String> getPropertiesId(String objectID) {
+       ArrayList<String> properties = new ArrayList<String>();
+
+        Cursor c = context.getContentResolver().query(
+                AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, null,
+                "_idDO = '" + objectID + "'", null, "_id");
+
+        if (!c.moveToFirst()) {
+            return properties;
+        } else {
+            do {
+                String id =  c.getString(c.getColumnIndex(DicObjectEntryTable.COLUMN_ID));
+                properties.add(id);
+
+
+            } while (c.moveToNext());
+            return properties;
+        }
+    }
+
+
 
 	public boolean entryExist(String id_entry, String new_value) {
 		String URL = "content://com.example.andodab.provider.Andodab/entry";
@@ -1085,17 +1088,69 @@ public class ContentProviderUtil {
 		return c.getString(c.getColumnIndex(EntryTable.NAME));
 	}
 
-	public HashMap<String, String> getParentProperties(String objectID) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		HashMap<String, String> tmpProp;
+    public HashMap<String,String> getEntry(String propertyID) {
+        HashMap<String,String> map = new HashMap<String, String>();
+        Cursor cE = context.getContentResolver().query(
+                AndodabContentProvider.CONTENT_URI_ENTRY, null,
+                EntryTable.COLUMN_ID + " = " + propertyID, null,
+                EntryTable.NAME);
+
+        if(!cE.moveToFirst()) {
+            return null;
+        }
+        Cursor detailEntry = null;
+        if(cE.getString(cE.getColumnIndex(EntryTable.ENTRYTYPE))
+                .toUpperCase().equals("OBJECT")) {
+            detailEntry = context
+                    .getContentResolver()
+                    .query(AndodabContentProvider.CONTENT_URI_OBJECTENTRY,
+                            null,
+                            "_id = "
+                                    + cE.getString(cE
+                                    .getColumnIndex(EntryTable.COLUMN_ID)),
+                            null, "_id");
+        } else {
+            detailEntry = context
+                    .getContentResolver()
+                    .query(AndodabContentProvider.CONTENT_URI_PRIMITIVEENTRY,
+                            null,
+                            "_id = "
+                                    + cE.getString(cE
+                                    .getColumnIndex(EntryTable.COLUMN_ID)),
+                            null, "_id");
+        }
+        if (!detailEntry.moveToFirst()) {
+            return null;
+        } else {
+
+            map.put(EntryTable.COLUMN_ID,propertyID);
+            map.put(EntryTable.NAME,cE.getString(cE
+                    .getColumnIndex(EntryTable.NAME)));
+            map.put(ObjectEntryTable.VALUE,detailEntry.getString(detailEntry
+                    .getColumnIndex(ObjectEntryTable.VALUE)));
+            map.put(EntryTable.ENTRYTYPE,cE.getString(cE.getColumnIndex(EntryTable.ENTRYTYPE))
+                    .toUpperCase());
+            return map;
+
+
+        }
+
+
+
+
+    }
+
+	public ArrayList<String> getParentProperties(String objectID) {
+        ArrayList<String> properties = new ArrayList<String>();
+        ArrayList<String> tmpProp;
 		HashMap<String, String> map = getObject(objectID);
 		String ancestor = map.get(ObjectTable.ANCESTOR);
 		while (ancestor != null) {
 			map = getObject(ancestor);
-			tmpProp = getProperties(ancestor);
-			for (Map.Entry<String, String> entry : tmpProp.entrySet()) {
-				if (!properties.containsKey(entry.getKey())) {
-					properties.put(entry.getKey(), entry.getValue());
+			tmpProp = getPropertiesId(ancestor);
+			for (String entry: tmpProp) {
+				if (!properties.contains(entry)) {
+					properties.add(entry);
 				}
 			}
 			ancestor = map.get(ObjectTable.ANCESTOR);
