@@ -250,16 +250,36 @@ public class AndodabContentProvider extends ContentProvider {
 						.equals("STRING")) { // String
 					values.put(ObjectTable.COLUMN_ID,
 							AndodabContentProvider.idString);
+					// meaning the ancestor is the root
+					if (values.get(ObjectTable.ANCESTOR) == null
+							&& !(values.getAsString(ObjectTable.NAME)
+									.equals(AndodabContentProvider.idroot))) {
+						values.put(ObjectTable.ANCESTOR,
+								AndodabContentProvider.idroot);
+					}
 				} else if (values.getAsString(ObjectTable.NAME).toUpperCase()
 						.equals("FLOAT")) { // String
 					values.put(ObjectTable.COLUMN_ID,
 							AndodabContentProvider.idFloat);
+					// meaning the ancestor is the root
+					if (values.get(ObjectTable.ANCESTOR) == null
+							&& !(values.getAsString(ObjectTable.NAME)
+									.equals(AndodabContentProvider.idroot))) {
+						values.put(ObjectTable.ANCESTOR,
+								AndodabContentProvider.idroot);
+					}
 				} else if (values.getAsString(ObjectTable.NAME).toUpperCase()
 						.equals("INTEGER")) { // String
 					values.put(ObjectTable.COLUMN_ID,
 							AndodabContentProvider.idInteger);
-				} else { // random
-
+					// meaning the ancestor is the root
+					if (values.get(ObjectTable.ANCESTOR) == null
+							&& !(values.getAsString(ObjectTable.NAME)
+									.equals(AndodabContentProvider.idroot))) {
+						values.put(ObjectTable.ANCESTOR,
+								AndodabContentProvider.idroot);
+					}
+				} else {
 					Random random = new Random();
 					if(values.get(ObjectTable.COLUMN_ID) == null)
 						values.put(ObjectTable.COLUMN_ID, random.nextLong());

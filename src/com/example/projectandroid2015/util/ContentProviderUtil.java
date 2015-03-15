@@ -1,6 +1,7 @@
 package com.example.projectandroid2015.util;
 
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -238,7 +239,7 @@ public class ContentProviderUtil {
 		values.clear();
 
 		values.put(DicObjectEntryTable.COLUMN_ID, getEntryID(name, value));
-		values.put(DicObjectEntryTable.COLUMN_ID2, value);
+		values.put(DicObjectEntryTable.COLUMN_ID2, objectId);
 
 		context.getContentResolver().insert(
 				AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, values);
@@ -689,6 +690,27 @@ public class ContentProviderUtil {
 			return properties;
 		}
 	}
+    public ArrayList<String> getPropertiesId(String objectID) {
+       ArrayList<String> properties = new ArrayList<String>();
+
+        Cursor c = context.getContentResolver().query(
+                AndodabContentProvider.CONTENT_URI_DICOOBJENTRY, null,
+                "_idDO = '" + objectID + "'", null, "_id");
+
+        if (!c.moveToFirst()) {
+            return properties;
+        } else {
+            do {
+                String id =  c.getString(c.getColumnIndex(DicObjectEntryTable.COLUMN_ID));
+                properties.add(id);
+
+
+            } while (c.moveToNext());
+            return properties;
+        }
+    }
+
+
 
 	public boolean entryExist(String id_entry, String new_value) {
 		String URL = "content://com.example.andodab.provider.Andodab/entry";
@@ -1086,17 +1108,69 @@ public class ContentProviderUtil {
 		return c.getString(c.getColumnIndex(EntryTable.NAME));
 	}
 
-	public HashMap<String, String> getParentProperties(String objectID) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		HashMap<String, String> tmpProp;
+    public HashMap<String,String> getEntry(String propertyID) {
+        HashMap<String,String> map = new HashMap<String, String>();
+        Cursor cE = context.getContentResolver().query(
+                AndodabContentProvider.CONTENT_URI_ENTRY, null,
+                EntryTable.COLUMN_ID + " = " + propertyID, null,
+                EntryTable.NAME);
+
+        if(!cE.moveToFirst()) {
+            return null;
+        }
+        Cursor detailEntry = null;
+        if(cE.getString(cE.getColumnIndex(EntryTable.ENTRYTYPE))
+                .toUpperCase().equals("OBJECT")) {
+            detailEntry = context
+                    .getContentResolver()
+                    .query(AndodabContentProvider.CONTENT_URI_OBJECTENTRY,
+                            null,
+                            "_id = "
+                                    + cE.getString(cE
+                                    .getColumnIndex(EntryTable.COLUMN_ID)),
+                            null, "_id");
+        } else {
+            detailEntry = context
+                    .getContentResolver()
+                    .query(AndodabContentProvider.CONTENT_URI_PRIMITIVEENTRY,
+                            null,
+                            "_id = "
+                                    + cE.getString(cE
+                                    .getColumnIndex(EntryTable.COLUMN_ID)),
+                            null, "_id");
+        }
+        if (!detailEntry.moveToFirst()) {
+            return null;
+        } else {
+
+            map.put(EntryTable.COLUMN_ID,propertyID);
+            map.put(EntryTable.NAME,cE.getString(cE
+                    .getColumnIndex(EntryTable.NAME)));
+            map.put(ObjectEntryTable.VALUE,detailEntry.getString(detailEntry
+                    .getColumnIndex(ObjectEntryTable.VALUE)));
+            map.put(EntryTable.ENTRYTYPE,cE.getString(cE.getColumnIndex(EntryTable.ENTRYTYPE))
+                    .toUpperCase());
+            return map;
+
+
+        }
+
+
+
+
+    }
+
+	public ArrayList<String> getParentProperties(String objectID) {
+        ArrayList<String> properties = new ArrayList<String>();
+        ArrayList<String> tmpProp;
 		HashMap<String, String> map = getObject(objectID);
 		String ancestor = map.get(ObjectTable.ANCESTOR);
 		while (ancestor != null) {
 			map = getObject(ancestor);
-			tmpProp = getProperties(ancestor);
-			for (Map.Entry<String, String> entry : tmpProp.entrySet()) {
-				if (!properties.containsKey(entry.getKey())) {
-					properties.put(entry.getKey(), entry.getValue());
+			tmpProp = getPropertiesId(ancestor);
+			for (String entry: tmpProp) {
+				if (!properties.contains(entry)) {
+					properties.add(entry);
 				}
 			}
 			ancestor = map.get(ObjectTable.ANCESTOR);
