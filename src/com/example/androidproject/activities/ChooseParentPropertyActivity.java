@@ -57,12 +57,14 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
                 String idProp = adaptaters.getItem(position);
                 Map<String,String> entry = util.getEntry(idProp);
                 String valueName = util.getObject(entry.get(ObjectEntryTable.VALUE)).get(ObjectTable.NAME);
-                if(!entry.get(EntryTable.ENTRYTYPE).equals("Object")){
-
+                if(!entry.get(EntryTable.ENTRYTYPE).equalsIgnoreCase("Object")){
+                    Intent i = new Intent();
+                    i.putExtra("idProperty",idProp);
+                    setResult(RESULT_OK, i);
+                    finish();
                 }else {
                     if (valueName.equals("String") || valueName.equals("Integer") || valueName.equals("Float")) {
-                        //TODO alertbox puis création de la prop avec type primitive
-                        System.out.println("test");
+                        createValueDialog(idProp);
                     } else {
                         nameClic = entry.get(EntryTable.NAME);
                         Toast.makeText(mContext, "Choose new value", Toast.LENGTH_LONG).show();
@@ -70,10 +72,10 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
                         Intent i = new Intent(mContext, Galaxy.class);
                         HashMap<String, String> objValue = util.getObject(entry.get(ObjectEntryTable.VALUE));
                         if (objValue.get(ObjectTable.NAME).equals("root")) {
-                            i.putExtra("idRoot", objValue.get(ObjectTable.COLUMN_ID));
+                            i.putExtra("rootId", objValue.get(ObjectTable.COLUMN_ID));
 
                         } else {
-                            i.putExtra("idRoot", objValue.get(ObjectTable.ANCESTOR).toString());
+                            i.putExtra("rootId", objValue.get(ObjectTable.ANCESTOR).toString());
                         }
                         startActivityForResult(i, 555);
                     }
@@ -97,14 +99,15 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
 
             }
         }else  if(requestCode==555){
+            if(resultCode == RESULT_OK) {
+                String idValue = data.getStringExtra("id");
+                String idProp = util.addObjectProperty(idObjet, nameClic, idValue);
+                Intent i = new Intent();
+                i.putExtra("idProperty", idProp);
+                setResult(RESULT_OK, i);
+                finish();
 
-            String idValue = data.getStringExtra("id");
-            String idProp=util.addObjectProperty(idObjet,nameClic,idValue);
-            Intent i = new Intent();
-            i.putExtra("idProperty",idProp);
-            setResult(RESULT_OK, i);
-            finish();
-            //TODO recup id et fait ta vie(crée la prop et la renvoyé)
+            }
         }
     }
 
@@ -251,6 +254,43 @@ public class ChooseParentPropertyActivity extends Activity implements SearchView
         });
 
 }
+    private void createValueDialog(String idProp){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setView(this.getLayoutInflater().inflate(R.layout.dialog_edit_primitive_prop, null));
+        dialog.setTitle(getString(R.string.new_property_title));
+        final HashMap<String,String> entry = util.getEntry(idProp);
+        dialog.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        final AlertDialog dial = dialog.create();
+        dial.show();
+         Button bPositive = dial.getButton(DialogInterface.BUTTON_POSITIVE);
+        final EditText et = (EditText) dial.findViewById(R.id.newVal);
+        bPositive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(et.getText().toString().isEmpty()){
+                    Toast.makeText(mContext,R.string.toastNameField,Toast.LENGTH_LONG);
+
+                }else {
+                    String idProp = util.addPrimitiveProperty(idObjet,entry.get(EntryTable.NAME),et.getText().toString());
+                    Intent i = new Intent();
+                    i.putExtra("idProperty",idProp);
+                    setResult(RESULT_OK, i);
+                    dial.dismiss();
+                    finish();
+                }
+            }
+        });
+    }
+
 
     public void newProperty(final View view){
         newPropertyDialog(null);

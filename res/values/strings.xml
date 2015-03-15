@@ -26,5 +26,6 @@
     <string name="no">No</string>
     <string name="non">no</string>
     <string name="toast_choose_objet">Choose Object</string>
+    <string name="hint_new_value">New Value</string>
 
 </resources>
