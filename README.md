@@ -1,6 +1,6 @@
 ## Andodab
 
-### Installation du projet
+### Installation
 
 Pour utiliser notre projet, 2 options sont possibles :
 
